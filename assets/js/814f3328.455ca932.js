@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmy_blog=self.webpackChunkmy_blog||[]).push([[472],{5513:e=>{e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"\uace0\ubbfc","permalink":"/blog/\uace0\ubbfc","unlisted":false,"date":"2025-09-27T12:19:44.000Z"},{"title":"bevy \ud6c4\uae30","permalink":"/blog/bevy-review","unlisted":false,"date":"2024-12-31T00:00:00.000Z"}]}')}}]);
