@@ -17,3 +17,8 @@ hola:
   label: Hola
   permalink: /hola
   description: Hola tag description
+
+game:
+  label: Game
+  permalink: /game
+  description: Game tag description
