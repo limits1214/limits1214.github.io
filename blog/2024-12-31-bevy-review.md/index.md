@@ -1,7 +1,7 @@
 ---
 slug: bevy-review
 title: bevy 후기
-authors: [lsy969999]
+authors: [limits1214]
 tags: [game]
 ---
 
