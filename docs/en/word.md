@@ -36,8 +36,8 @@ inequality: 부등식
 a < b: a is less than b
 a > b: a is greater than b
 a != b: a is not equal to b
-a <= b: a is less than or equal to b
-a >= b: a is greater than or equal to b
+a \<= b: a is less than or equal to b
+a \>= b: a is greater than or equal to b
 open side > vertex side: open side grater than vertex side
 farther: 더멀리
 compelling: 설득력 있는
