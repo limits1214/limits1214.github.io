@@ -4,7 +4,7 @@
         <title>Limits1214 Blog</title>
         <link>https://limits1214.github.io/blog</link>
         <description>Limits1214 Blog</description>
-        <lastBuildDate>Sat, 27 Sep 2025 12:19:44 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 27 Sep 2025 12:40:01 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
@@ -12,7 +12,7 @@
             <title><![CDATA[고민]]></title>
             <link>https://limits1214.github.io/blog/고민</link>
             <guid>https://limits1214.github.io/blog/고민</guid>
-            <pubDate>Sat, 27 Sep 2025 12:19:44 GMT</pubDate>
+            <pubDate>Sat, 27 Sep 2025 12:40:01 GMT</pubDate>
             <description><![CDATA[- 32비트 컴퓨터, 64비트 컴퓨터의 32, 64는 뭐지?]]></description>
             <content:encoded><![CDATA[<ul>
 <li>32비트 컴퓨터, 64비트 컴퓨터의 32, 64는 뭐지?</li>
@@ -51,6 +51,41 @@ dst가 src보다 앞이라면 앞에서부터 뒤로 복사를 진행한다.</p>
 그래서 생성자에서는 널포인터만주고new할때는 바깥에서 해주는거를 추천한다.
 생성자에서는 포인터 널포인터만 주자
 생성자 단계에서 쓸데없이 주소 주지 말자 이게 문제가 많이 된다.</p>]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[통증]]></title>
+            <link>https://limits1214.github.io/blog/2025/09/26/me/통증</link>
+            <guid>https://limits1214.github.io/blog/2025/09/26/me/통증</guid>
+            <pubDate>Fri, 26 Sep 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[와 정말 아프다.]]></description>
+            <content:encoded><![CDATA[<p>와 정말 아프다.<br>
+<!-- -->난생 이런 통증은 처음이다.<br>
+<!-- -->목이 너무 아프다.<br>
+<!-- -->침을 삼킬수 조차 없다.<br>
+<!-- -->물은 마실 엄두도 나지 않는다.<br>
+<!-- -->자야하는데 통증때문에 잠이 오질 않는다.<br>
+<!-- -->그리고 땀이 왜이렇게 많이 나는지 모르겠다.<br>
+<!-- -->침대가 다 젖을 정도로 땀이 난다.<br>
+<!-- -->땀으로 모든 수분이 나갔지만 목이아파서 물을 못마시겠다.<br>
+<!-- -->뭔가 내목 아니면 내몸에 큰일이 난건가??<br>
+<!-- -->다행인건 두통은 없다 그저 순수히 목만 너무 아프다.<br>
+<!-- -->버티고 버텨서 9시가 되자마자 근처 이비인후과에 갔다.<br>
+<!-- -->데스크에서 접수를 위해 말하는데 목소리가 다 쉬었다.<br>
+<!-- -->그리고 나는 크게 말하려는데 목소리가 작게 나간다.<br>
+<!-- -->안내 해주시는 분이 코로나+독감 검사를 추천했다.<br>
+<!-- -->최근 코로나 증상중에 하나가 목 통증이란다...<br>
+<!-- -->3만5천원 주고 받았다. ㅠㅠ<br>
+<!-- -->검사 받을때 간호사분이 무슨 면봉을 코에서 뇌까지 쑤셔넣어서 돌리는거 같았다.<br>
+<!-- -->검사 결과는 다행히 둘다 음성... 아니면 내가 새로운 변이의 시작점일수도??<br>
+<!-- -->진료를 보는데 의사 선생님이 내 목을 보더니 엄청 부어 있다고 한다.<br>
+<!-- -->약 쎈거를 줄테니 주사도 맞고 가라고 했다.<br>
+<!-- -->주사맞고 약도 받고(3일치) 집에와서 간단히 밥을먹고 약을 먹었다.<br>
+<!-- -->약이 무슨 5개나 들어있었다. 항생제, 소염제, 등등...<br>
+<!-- -->약먹고 1시간 정도 지나니 신기하게 통증이 점점 없어졌다.<br>
+<!-- -->와 진짜 나는 밤새 몇시간 동안 개고생 햇는데 약 먹자마자 이렇게 바로 호전이 된다고??<br>
+<!-- -->진짜 현대 의학 최고다.<br>
+<!-- -->그래도 아직 통증이 있다. 못버틸 통증에서 버틸 통증으로 변한거다.<br>
+<!-- -->중요한건 물을 마실수 있다는것이다. 내일 푹쉬면 컨디션 정상으로 돌릴수 있을거 같다.</p>]]></content:encoded>
         </item>
         <item>
             <title><![CDATA[bevy 후기]]></title>
