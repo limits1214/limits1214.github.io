@@ -22,3 +22,8 @@ game:
   label: Game
   permalink: /game
   description: Game tag description
+
+cpp:
+  label: Cpp
+  permalink: /cpp
+  description: Cpp tag description
