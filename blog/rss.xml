@@ -4,7 +4,7 @@
         <title>Limits1214 Blog</title>
         <link>https://limits1214.github.io/blog</link>
         <description>Limits1214 Blog</description>
-        <lastBuildDate>Thu, 12 Mar 2026 14:32:57 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 12 Mar 2026 14:53:19 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>ko</language>
@@ -12,7 +12,7 @@
             <title><![CDATA[cpp]]></title>
             <link>https://limits1214.github.io/blog/cpp</link>
             <guid>https://limits1214.github.io/blog/cpp</guid>
-            <pubDate>Thu, 12 Mar 2026 14:32:57 GMT</pubDate>
+            <pubDate>Thu, 12 Mar 2026 14:53:19 GMT</pubDate>
             <description><![CDATA[---]]></description>
             <content:encoded><![CDATA[<hr>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="slug-cpptitle-cppauthors-limits1214tags-cpp">slug: cpp
@@ -34,7 +34,7 @@ tags: [cpp]에 대한 직접 링크" translate="no">​</a></h2>
             <title><![CDATA[고민]]></title>
             <link>https://limits1214.github.io/blog/고민</link>
             <guid>https://limits1214.github.io/blog/고민</guid>
-            <pubDate>Thu, 12 Mar 2026 14:32:57 GMT</pubDate>
+            <pubDate>Thu, 12 Mar 2026 14:53:19 GMT</pubDate>
             <description><![CDATA[- 32비트 컴퓨터, 64비트 컴퓨터의 32, 64는 뭐지?]]></description>
             <content:encoded><![CDATA[<ul>
 <li class="">32비트 컴퓨터, 64비트 컴퓨터의 32, 64는 뭐지?</li>
