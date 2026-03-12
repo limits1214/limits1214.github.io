@@ -40,8 +40,6 @@ const config: Config = {
       'classic',
       {
         docs: {
-            path: 'note',
-            routeBasePath: 'note',
             sidebarPath: './sidebars.ts',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
@@ -86,7 +84,7 @@ const config: Config = {
         //   position: 'left',
         //   label: 'Tutorial',
         // },
-        {to: '/note', label: 'Note', position: 'left'},
+        {to: '/docs', label: 'docs', position: 'left'},
         //{to: '/blog', label: 'Blog', position: 'left'},
         {
           href: 'https://github.com/limits1214',
@@ -125,19 +123,19 @@ const config: Config = {
         //     },
         //   ],
         // },
-        {
-          title: 'More',
-          items: [
-            {
-              label: 'Blog',
-              to: '/blog',
-            },
-            {
-              label: 'GitHub',
-              href: 'https://github.com/limits1214',
-            },
-          ],
-        },
+        // {
+        //   title: 'More',
+        //   items: [
+        //     {
+        //       label: 'Blog',
+        //       to: '/blog',
+        //     },
+        //     {
+        //       label: 'GitHub',
+        //       href: 'https://github.com/limits1214',
+        //     },
+        //   ],
+        // },
       ],
       copyright: `Copyright © ${new Date().getFullYear()} Limits1214, Inc. Built with Docusaurus.`,
     },
