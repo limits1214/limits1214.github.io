@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://limits1214.github.io/blog</id>
     <title>Limits1214 Blog</title>
-    <updated>2026-03-14T22:31:57.000Z</updated>
+    <updated>2026-03-16T22:59:53.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://limits1214.github.io/blog"/>
     <subtitle>Limits1214 Blog</subtitle>
@@ -11,7 +11,7 @@
         <title type="html"><![CDATA[cpp]]></title>
         <id>https://limits1214.github.io/blog/cpp</id>
         <link href="https://limits1214.github.io/blog/cpp"/>
-        <updated>2026-03-14T22:31:57.000Z</updated>
+        <updated>2026-03-16T22:59:53.000Z</updated>
         <summary type="html"><![CDATA[---]]></summary>
         <content type="html"><![CDATA[<hr>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="slug-cpptitle-cppauthors-limits1214tags-cpp">slug: cpp
@@ -33,7 +33,7 @@ tags: [cpp]에 대한 직접 링크" translate="no">​</a></h2>
         <title type="html"><![CDATA[고민]]></title>
         <id>https://limits1214.github.io/blog/고민</id>
         <link href="https://limits1214.github.io/blog/고민"/>
-        <updated>2026-03-14T22:31:57.000Z</updated>
+        <updated>2026-03-16T22:59:53.000Z</updated>
         <summary type="html"><![CDATA[- 32비트 컴퓨터, 64비트 컴퓨터의 32, 64는 뭐지?]]></summary>
         <content type="html"><![CDATA[<ul>
 <li class="">32비트 컴퓨터, 64비트 컴퓨터의 32, 64는 뭐지?</li>
