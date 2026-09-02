@@ -1,3 +1,0 @@
-# data-structure
-
-[List](list)  

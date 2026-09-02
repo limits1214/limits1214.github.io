@@ -1,47 +1,30 @@
-import clsx from 'clsx';
 import Link from '@docusaurus/Link';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
-import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import Heading from '@theme/Heading';
 
 import styles from './index.module.css';
 
-import { Redirect } from '@docusaurus/router';
-
-function HomepageHeader() {
-  const {siteConfig} = useDocusaurusContext();
+export default function Home(): React.JSX.Element {
   return (
-    <header className={clsx('hero hero--primary', styles.heroBanner)}>
-      <div className="container">
-        <Heading as="h1" className="hero__title">
-          {siteConfig.title}
-        </Heading>
-        <p className="hero__subtitle">{siteConfig.tagline}</p>
-        <div className={styles.buttons}>
+    <Layout
+      title="Portfolio"
+      description="Limits1214의 게임 클라이언트·엔진 개발 포트폴리오">
+      <main className={styles.page}>
+        <section className={styles.hero}>
+          <p className={styles.eyebrow}>C++ GAME CLIENT · ENGINE</p>
+          <Heading as="h1" className={styles.title}>
+            Limits1214
+          </Heading>
+          <p className={styles.description}>
+            포트폴리오를 새로운 구조로 구성하고 있습니다.
+          </p>
           <Link
-            className="button button--secondary button--lg"
-            to="/docs">
-            Docusaurus Tutorial - 5min ⏱️
+            className="button button--primary button--lg"
+            href="https://github.com/limits1214">
+            GitHub
           </Link>
-        </div>
-      </div>
-    </header>
+        </section>
+      </main>
+    </Layout>
   );
-}
-
-export default function Home(): JSX.Element {
-    // docs 로 바로가게 설정
-  return <Redirect to="/docs" />;
-//   const {siteConfig} = useDocusaurusContext();
-//   return (
-//     <Layout
-//       title={`Hello from ${siteConfig.title}`}
-//       description="Description will go into a meta tag in <head />">
-//       <HomepageHeader />
-//       <main>
-//         <HomepageFeatures />
-//       </main>
-//     </Layout>
-//   );
 }

@@ -1,23 +1,39 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
-
-.heroBanner {
-  padding: 4rem 0;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
+.page {
+  min-height: calc(100vh - var(--ifm-navbar-height));
+  display: grid;
+  place-items: center;
+  padding: 4rem 1.5rem;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(47, 111, 237, 0.12), transparent 35%),
+    var(--ifm-background-color);
 }
 
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
-  }
+.hero {
+  width: min(100%, 64rem);
+  padding: clamp(2rem, 7vw, 6rem);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 2rem;
+  background: var(--ifm-card-background-color);
+  box-shadow: 0 2rem 5rem rgba(18, 30, 50, 0.08);
 }
 
-.buttons {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.eyebrow {
+  margin-bottom: 1rem;
+  color: var(--ifm-color-primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.title {
+  margin-bottom: 1rem;
+  font-size: clamp(3rem, 9vw, 6.5rem);
+  letter-spacing: -0.06em;
+}
+
+.description {
+  max-width: 38rem;
+  margin-bottom: 2rem;
+  color: var(--ifm-color-emphasis-700);
+  font-size: clamp(1rem, 2vw, 1.25rem);
 }

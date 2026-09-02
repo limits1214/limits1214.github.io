@@ -1,41 +1,26 @@
-# Website
+# Limits1214 Portfolio
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+Docusaurus로 작성하는 개인 포트폴리오 사이트입니다.
 
-### Installation
+## Requirements
 
-```
-$ yarn
-```
+- Node.js 20 이상
+- npm
 
-### Local Development
+## Local development
 
-```
-$ yarn start
-```
-
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
-
-### Build
-
-```
-$ yarn build
+```bash
+npm ci
+npm run start
 ```
 
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
+## Verification
 
-### Deployment
-
-Using SSH:
-
-```
-$ USE_SSH=true yarn deploy
+```bash
+npm run typecheck
+npm run build
 ```
 
-Not using SSH:
+## Deployment
 
-```
-$ GIT_USER=<Your GitHub username> yarn deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+`main` 브랜치에 푸시하면 GitHub Actions가 정적 사이트를 빌드해 GitHub Pages에 배포합니다.
