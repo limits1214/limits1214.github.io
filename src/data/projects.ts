@@ -14,6 +14,8 @@ export type PortfolioProject = {
   teamSize?: string;
   platform?: string;
   githubUrl?: string;
+  videoUrl?: string;
+  videoCaption?: string;
   overview?: string;
   collaboration?: string[];
   tasks?: ProjectTask[];

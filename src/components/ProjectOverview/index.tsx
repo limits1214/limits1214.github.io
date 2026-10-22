@@ -60,6 +60,28 @@ export default function ProjectOverview({
           </dl>
           <p className={styles.description}>{project.description}</p>
 
+          {project.videoUrl && (
+            <section className={styles.projectSection} aria-labelledby="video-title">
+              <Heading as="h2" id="video-title" className={styles.sectionTitle}>
+                영상 포트폴리오
+              </Heading>
+              {project.videoCaption && <p>{project.videoCaption}</p>}
+              <p>
+                <Link href={project.videoUrl} target="_blank" rel="noopener noreferrer">
+                  YouTube에서 영상 보기 ↗
+                </Link>
+              </p>
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/${new URL(project.videoUrl).searchParams.get('v')}?start=${Number(new URL(project.videoUrl).searchParams.get('t')) || 0}`}
+                title={`${project.title} 영상 포트폴리오`}
+                style={{width: '100%', aspectRatio: '16 / 9', border: 0, display: 'block'}}
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            </section>
+          )}
+
           {project.overview && (
             <section className={styles.projectSection} aria-labelledby="overview-title">
               <Heading as="h2" id="overview-title" className={styles.sectionTitle}>

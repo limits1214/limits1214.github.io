@@ -17,7 +17,7 @@ export default function Home(): React.JSX.Element {
           </Heading>
           <p className={styles.nickname}>Limits1214</p>
           <p className={styles.aspiration}>
-            게임 전체를 이해하는 개발자가 되고 싶습니다.
+            동작하는 이유를 이해하고, 더 나은 방법을 고민합니다.
           </p>
           <p className={styles.description}>
             배우고 고민하고 경험한 것을 기록합니다.
