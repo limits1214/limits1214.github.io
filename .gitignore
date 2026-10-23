@@ -4,6 +4,15 @@
 # Production
 /build
 /output
+/tmp/
+
+# Raster exports of source diagrams (keep SVG sources)
+/static/img/projects/dave-the-diver/spine-shared-instance.png
+/static/img/projects/hogwarts-legacy/cloth-simulation-render-mesh.png
+/static/img/projects/hogwarts-legacy/handle-slot-lifecycle.png
+/static/img/projects/minecraft/chunk-range-request.png
+/static/img/projects/minecraft/chunk-worker-pipeline.png
+/static/img/projects/tetris/shared-board-rules.png
 
 # Generated files
 .docusaurus

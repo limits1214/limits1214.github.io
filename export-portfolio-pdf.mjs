@@ -18,6 +18,16 @@ if (basename(preset.outputFileName) !== preset.outputFileName || !preset.outputF
 const outputDir = resolve(root, 'output/pdf');
 const outputPath = resolve(outputDir, preset.outputFileName);
 const styles = await readFile(resolve(root, 'portfolio-pdf.css'), 'utf8');
+const katexDir = resolve(root, 'node_modules/katex/dist');
+const katexCss = await readFile(resolve(katexDir, 'katex.min.css'), 'utf8');
+const fontUrls = [...new Set([...katexCss.matchAll(/url\((fonts\/[^)]+)\)/g)].map(match => match[1]))];
+let mathStyles = katexCss;
+for (const fontUrl of fontUrls) {
+  const font = await readFile(resolve(katexDir, fontUrl));
+  const format = fontUrl.split('.').at(-1);
+  const mime = format === 'ttf' ? 'font/ttf' : `font/${format}`;
+  mathStyles = mathStyles.replaceAll(`url(${fontUrl})`, `url(data:${mime};base64,${font.toString('base64')})`);
+}
 await mkdir(outputDir, {recursive: true});
 
 // 실행 중인 사용자 개발 서버와 겹치지 않는 포트를 사용한다.
@@ -60,7 +70,7 @@ function escapeHtml(value) {
 
 async function printHtml(page, body, cover = false) {
   await page.setContent(`<!doctype html><html lang="ko"><head><meta charset="utf-8">
-    <style>${styles}</style></head><body class="${cover ? 'cover' : 'document'} ${cover && preset.compactProfile ? 'compact-profile' : ''}">${body}</body></html>`,
+    <style>${styles}\n${mathStyles}</style></head><body class="${cover ? 'cover' : 'document'} ${cover && preset.compactProfile ? 'compact-profile' : ''}">${body}</body></html>`,
   {waitUntil: 'networkidle'});
   await page.evaluate(async () => {
     await document.fonts.ready;
@@ -123,6 +133,8 @@ async function renderMdxDocument(page, entry, index) {
     });
     output.querySelectorAll('img').forEach(img => { img.src = new URL(img.getAttribute('src'), location.href).href; });
     output.querySelectorAll('*').forEach(node => {
+      // 수식은 KaTeX의 정렬과 글꼴 정보를 유지해 웹과 같은 모양으로 출력한다.
+      if (node.closest('.katex, .katex-display')) return;
       node.removeAttribute('class');
       node.removeAttribute('style');
     });
@@ -145,7 +157,7 @@ async function renderCover(page, entries) {
     .map(slug => projects.find(project => project.slug === slug));
   const projectCards = selectedProjects.map(project => `<section class="project-card">
     <h2>${escapeHtml(project.title)}</h2>
-    <div class="metadata">${escapeHtml(project.period)} · ${escapeHtml(project.teamSize)} · ${escapeHtml(project.platform)}</div>
+    <div class="metadata">${escapeHtml(project.period)} · ${escapeHtml(project.teamSize)}</div>
     <p>${escapeHtml(project.description)}</p>
     ${project.githubUrl ? `<a class="repository-link" href="${escapeHtml(project.githubUrl)}">GitHub 저장소 ↗</a>` : ''}
   </section>`).join('');
@@ -192,7 +204,7 @@ try {
   merged.getPages().forEach((page, index) => {
     const {width} = page.getSize();
     page.drawLine({start: {x: 48, y: 33}, end: {x: width - 48, y: 33}, thickness: 0.4, color: rgb(.83, .86, .89)});
-    page.drawText('limits1214 | Game Client Portfolio', {x: 48, y: 21, size: 8, font, color: rgb(.38, .44, .49)});
+    page.drawText('limits1214 | Game Portfolio', {x: 48, y: 21, size: 8, font, color: rgb(.38, .44, .49)});
     const number = `${index + 1} / ${count}`;
     page.drawText(number, {x: width - 48 - font.widthOfTextAtSize(number, 8), y: 21, size: 8, font, color: rgb(.38, .44, .49)});
   });

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="640" viewBox="0 0 900 640" role="img" aria-labelledby="title desc">
+  <title id="title">사슬팔 발사 거리 400과 스윙 전 당김 기준 200</title>
+  <desc id="desc">발사 중 플레이어와 갈고리의 거리가 400을 넘으면 제거합니다. 멀리 결속하면 플레이어를 당기고 거리가 200보다 짧아질 때 실제 줄 길이 L을 저장해 스윙을 시작합니다.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#26778c"/></marker>
+    <style>
+      text{font-family:'Malgun Gothic',sans-serif;fill:#25313b;font-size:17px}
+      .heading{font-size:20px;font-weight:700}
+      .note{font-size:15px;fill:#52616b}
+      .line{stroke:#26778c;stroke-width:3;fill:none}
+      .guide{stroke:#97a5ad;stroke-width:1.5;fill:none}
+    </style>
+  </defs>
+  <rect width="900" height="640" fill="#ffffff"/>
+  <text x="35" y="40" class="heading">1. 발사 중에는 플레이어와의 거리를 확인합니다.</text>
+  <circle cx="100" cy="105" r="12" fill="#26778c"/>
+  <text x="100" y="145" text-anchor="middle">플레이어</text>
+  <path d="M120 105H770" class="line" marker-end="url(#arrow)"/>
+  <path d="M100 165V180H780V165" class="guide"/>
+  <text x="440" y="171" text-anchor="middle">발사 거리 기준 400</text>
+  <path d="M780 80V128" class="guide"/>
+  <text x="780" y="65" text-anchor="middle" class="note">400 초과 시 갈고리 제거</text>
+  <path d="M35 207H865" class="guide"/>
+  <text x="35" y="247" class="heading">2. 멀리 결속하면 스윙 전에 먼저 당겨 옵니다.</text>
+  <path d="M780 288V330M760 288H800" stroke="#25313b" stroke-width="4"/>
+  <circle cx="780" cy="310" r="5" fill="#25313b"/>
+  <text x="780" y="357" text-anchor="middle">결속점</text>
+  <path d="M270 310H780" class="guide" stroke-dasharray="6 5"/>
+  <circle cx="270" cy="310" r="12" fill="#ffffff" stroke="#97a5ad" stroke-width="2"/>
+  <circle cx="490" cy="310" r="12" fill="#26778c"/>
+  <path d="M290 340H474" class="line" marker-end="url(#arrow)"/>
+  <text x="375" y="375" text-anchor="middle">플레이어를 결속점 쪽으로 이동</text>
+  <path d="M440 283V325M440 283H780" class="guide"/>
+  <text x="600" y="277" text-anchor="middle" class="note">당김 기준 200</text>
+  <text x="490" y="405" class="note">거리가 200보다 짧아지면 당김 종료</text>
+  <path d="M35 430H865" class="guide"/>
+  <text x="35" y="470" class="heading">3. 그 시점의 실제 거리 L로 스윙을 시작합니다.</text>
+  <circle cx="470" cy="498" r="5" fill="#25313b"/>
+  <text x="490" y="502" class="note">결속점</text>
+  <path d="M470 498L380 588" class="line"/>
+  <circle cx="380" cy="588" r="12" fill="#26778c"/>
+  <path d="M380 588A127 127 0 0 0 560 588" class="guide" stroke-dasharray="5 5"/>
+  <text x="390" y="540">L</text>
+  <text x="610" y="550">200으로 고정하지 않고</text>
+  <text x="610" y="579">현재 거리와 각도를 저장합니다.</text>
+</svg>

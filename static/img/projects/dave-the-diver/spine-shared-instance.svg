@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="880" viewBox="0 0 1100 880" role="img" aria-labelledby="title desc">
+  <title id="title">Spine 원본 공유와 물고기별 애니메이션 재생</title>
+  <desc id="desc">같은 어종의 텍스처와 본 구조 및 애니메이션 원본은 공유합니다. 각 물고기는 자신의 Skeleton과 AnimationState를 가지고 유영과 사망을 따로 재생합니다. 계산한 정점을 각자의 동적 버퍼에 갱신한 뒤 DirectX 9로 그립니다.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#26778c"/></marker>
+    <style>
+      text{font-family:'Malgun Gothic',sans-serif;fill:#25313b;font-size:20px}
+      .heading{font-size:24px;font-weight:700}
+      .label{font-size:21px;font-weight:700}
+      .small{font-size:17px;fill:#52616b}
+      .arrow{stroke:#26778c;stroke-width:2;fill:none;marker-end:url(#arrow)}
+      .rule{stroke:#acbbc2;stroke-width:1.5;fill:none}
+    </style>
+  </defs>
+  <rect width="1100" height="880" fill="#ffffff"/>
+  <text x="40" y="49" class="heading">원본은 공유하고 동작은 물고기별로 재생</text>
+  <text x="40" y="85" class="small">같은 어종이라도 각자의 자세와 재생 상태를 유지하도록 구성했습니다.</text>
+
+  <rect x="260" y="125" width="580" height="125" rx="3" fill="#eef3f5"/>
+  <text x="550" y="161" text-anchor="middle" class="label">공유 원본 리소스</text>
+  <text x="550" y="195" text-anchor="middle">텍스처 · 본 구조 · 애니메이션 데이터</text>
+  <text x="550" y="229" text-anchor="middle" class="small">CAssetSpine</text>
+  <path d="M550 250V279H290V312" class="arrow"/>
+  <path d="M550 279H810V312" class="arrow"/>
+
+  <rect x="75" y="328" width="430" height="185" rx="3" fill="#e3f0f3"/>
+  <rect x="595" y="328" width="430" height="185" rx="3" fill="#e3f0f3"/>
+  <text x="290" y="366" text-anchor="middle" class="label">물고기 A · 유영</text>
+  <text x="810" y="366" text-anchor="middle" class="label">물고기 B · 사망</text>
+  <path d="M100 385H480M620 385H1000" class="rule"/>
+  <text x="290" y="418" text-anchor="middle">현재 본 자세 · Skeleton</text>
+  <text x="810" y="418" text-anchor="middle">현재 본 자세 · Skeleton</text>
+  <text x="290" y="451" text-anchor="middle">재생 상태 · AnimationState</text>
+  <text x="810" y="451" text-anchor="middle">재생 상태 · AnimationState</text>
+  <text x="290" y="490" text-anchor="middle" class="small">CSpine 인스턴스 A</text>
+  <text x="810" y="490" text-anchor="middle" class="small">CSpine 인스턴스 B</text>
+
+  <path d="M290 513V566" class="arrow"/>
+  <path d="M810 513V566" class="arrow"/>
+  <text x="550" y="548" text-anchor="middle" class="small">Spine에서 현재 자세의 변형 정점 계산</text>
+  <rect x="75" y="584" width="430" height="99" rx="3" fill="#f2f5f7"/>
+  <rect x="595" y="584" width="430" height="99" rx="3" fill="#f2f5f7"/>
+  <text x="290" y="621" text-anchor="middle" class="label">A의 정점 버퍼 갱신</text>
+  <text x="810" y="621" text-anchor="middle" class="label">B의 정점 버퍼 갱신</text>
+  <text x="290" y="656" text-anchor="middle" class="small">CDynamicBuffer · 유영 자세 반영</text>
+  <text x="810" y="656" text-anchor="middle" class="small">CDynamicBuffer · 사망 자세 반영</text>
+
+  <path d="M290 683V727" class="arrow"/>
+  <path d="M810 683V727" class="arrow"/>
+  <text x="290" y="761" text-anchor="middle" class="label">DirectX 9로 A 그리기</text>
+  <text x="810" y="761" text-anchor="middle" class="label">DirectX 9로 B 그리기</text>
+  <path d="M40 797H1060" class="rule"/>
+  <text x="550" y="840" text-anchor="middle" class="small">한 물고기의 동작이 다른 물고기의 자세나 버퍼를 덮어쓰지 않습니다.</text>
+</svg>

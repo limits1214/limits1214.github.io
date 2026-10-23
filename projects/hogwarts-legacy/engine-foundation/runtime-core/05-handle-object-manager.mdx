@@ -14,21 +14,25 @@ tags:
 
 # Generation Handle 기반 Object Manager
 
-## 배경과 목표 {/* #문제 */}
+## 문제 상황
 
-GameObject를 Raw Pointer로 외부에 전달하면 조회 직후에는 빠르고 편하다. 하지만 레벨 전환, 전투 중 파괴, 비동기 Callback처럼 객체의 수명보다 참조가 오래 남는 순간 Dangling Pointer가 된다. 주소만으로는 그 메모리가 해제됐는지, 같은 주소에 다른 객체가 생성됐는지 판별할 수 없다.
+게임 객체는 공격 대상이나 이펙트를 발생시킨 객체처럼 다른 객체를 계속 참조합니다. 포인터를 보관하면 대상이 먼저 파괴된 뒤에도 그 주소가 남는 댕글링 포인터 문제가 생길 수 있습니다. 같은 메모리가 새 객체에 재사용되면 주소만으로는 이전 대상과 새 대상을 구분하기도 어렵습니다.
 
-이 문제를 Manager 소유권과 외부 참조로 분리해 해결했다.
+사용처마다 파괴를 통지하고 참조를 비우는 대신, 접근할 때 대상의 유효성을 공통으로 확인하고 싶었습니다. 또 객체를 갱신하는 도중 삭제하면 순회 중인 컨테이너와 다른 객체의 참조에 영향을 줄 수 있어 실제 정리 시점도 함께 정해야 했습니다.
 
-- Manager는 `unique_ptr<GameObject>`의 유일한 소유자다.
-- 외부 시스템은 장기 참조가 필요하면 `CHandle`을 저장한다.
-- 사용할 때마다 Manager가 Handle을 검증해 현재 객체를 반환한다.
+## 접근 방법 검토
 
-## Handle 구조
+`shared_ptr`도 고려했지만 참조가 남아 파괴가 늦어지거나 서로 참조해 해제되지 않는 상황을 피하고자 했습니다. 게임 객체는 매니저의 `unique_ptr`로 소유하고 다른 객체는 대상을 찾는 식별자인 핸들만 보관하도록 구성했습니다.
 
-`CHandle`은 32-bit Slot Index와 32-bit Generation으로 구성한 8-byte 값이다.
+접근할 때 대상의 유효성을 확인하고 객체의 수명은 외부 참조와 분리해 관리할 수 있어 이 방식을 선택했습니다.
 
-```cpp title="Handle.h"
+## 해결 과정
+
+### 슬롯이 재사용돼도 이전 참조를 구분하기
+
+매니저는 객체를 저장하는 칸인 슬롯을 배열로 관리합니다. `CHandle`에는 슬롯의 위치를 나타내는 32비트 인덱스와 같은 슬롯의 이전 객체와 새 객체를 구분하는 32비트 세대 번호를 담았습니다. 두 값을 합친 크기는 8바이트입니다.
+
+```cpp title="Handle.h의 핵심 구성"
 class CHandle
 {
 public:
@@ -43,92 +47,28 @@ private:
 static_assert(sizeof(CHandle) == sizeof(uint64_t));
 ```
 
-Index는 `m_Objects`의 Slot을 찾고, Generation은 그 Slot이 Handle 발급 당시와 같은 생명주기인지 확인한다.
+조회할 때는 인덱스 범위와 객체의 존재 여부를 확인하고 세대 번호를 비교합니다. 조건이 맞으면 객체의 포인터를 반환하고 맞지 않으면 `nullptr`를 반환합니다. 특정 클래스의 객체를 요청하는 `GetGameObjectByHandleT<T>`에서는 `Engine::Cast<T>`로 타입도 확인합니다.
 
-```text
-Handle { index: 12, generation: 3 }
-                    │
-                    ▼
-m_Objects[12] { generation: 3, object: Player }
-                    │
-                    └─ 일치: Player 반환
+### Free List로 빈 슬롯 재사용하기
 
-m_Objects[12] { generation: 4, object: NewMonster }
-                    │
-                    └─ 불일치: nullptr 반환
-```
+객체를 제거할 때 슬롯 벡터에서 해당 원소를 지우면 뒤쪽 인덱스가 바뀌어 기존 핸들이 다른 슬롯을 가리킬 수 있습니다. 따라서 슬롯은 그대로 두고 객체만 정리한 뒤 빈 슬롯의 인덱스를 `m_FreeSlots`에 보관했습니다.
 
-객체가 파괴되면 Slot의 소유 포인터를 Reset하고 Generation을 증가시킨다. 이후 같은 Slot을 재사용하더라도 이전 Handle은 새로운 객체를 가리킬 수 없다.
+빈 슬롯 목록인 Free List는 `std::vector<size_t>`로 구성했습니다. 객체를 생성할 때 목록 끝의 인덱스를 꺼내 재사용하고 빈 슬롯이 없을 때만 슬롯 배열을 늘립니다. 매번 전체 슬롯에서 빈자리를 찾지 않도록 했습니다.
 
-## 조회와 Typed Lookup
+슬롯을 정리하는 `Reset()`에서 세대 번호를 증가시킨 뒤 Free List에 인덱스를 반환합니다. 재사용 시에는 해당 슬롯의 현재 세대 번호로 새 핸들을 발급합니다.
 
-Manager는 범위, 점유 상태, Generation을 순서대로 검사한다.
+![핸들 조회와 Free List를 통한 슬롯 재사용](/img/projects/hogwarts-legacy/handle-slot-lifecycle.svg)
 
-```cpp
-const CGameObject* GetGameObjectByHandle(CHandle handle) const
-{
-    if (handle.index >= slots.size())
-        return nullptr;
-    if (!slots[handle.index].IsOccupied())
-        return nullptr;
-    if (slots[handle.index].Generation() != handle.generation)
-        return nullptr;
+### 갱신 중 삭제와 실제 메모리 해제를 나누기
 
-    return slots[handle.index].Get();
-}
-```
+삭제 요청은 `PendingDestroy` 표시와 핸들 목록에 기록했습니다. 삭제 예정 객체는 더 이상 갱신하지 않고 실제 정리는 프레임 종료 시 수행했습니다. 정리 도중 다른 객체의 삭제가 요청되더라도 순회 중인 목록이 바뀌지 않도록 새 요청과 현재 처리 목록을 분리했습니다.
 
-`GetGameObjectByHandleT<T>`는 여기에 자체 `Engine::Cast<T>`를 연결한다. Handle은 유효하지만 기대 타입이 아닌 경우에도 `nullptr`을 반환하므로, 수명과 타입을 한 번에 검증할 수 있다.
+객체를 묶는 레이어에도 포인터 대신 핸들 배열을 보관했습니다. 각 슬롯에 소속 레이어를 기록해 삭제 시 해당 레이어만 정리하고 레벨 전환에서는 필요한 레이어만 남기거나 비울 수 있도록 했습니다.
 
-## 즉시 삭제 대신 FrameEnd 지연 파괴
+### 실제 사용처에 연결하기
 
-Update 도중 컨테이너에서 객체를 즉시 제거하면 현재 순회 Iterator와 다른 객체가 가진 Pointer가 동시에 무효화될 수 있다. 그래서 삭제 요청은 `PendingDestroy`와 Handle Queue에 기록하고, 모든 Update 단계가 끝난 `FrameEnd`에서만 실제 해제를 수행한다.
+이펙트가 끝난 뒤 실행하는 함수에서는 저장한 포인터를 바로 사용하지 않고 핸들로 대상을 다시 조회했습니다. PhysX의 강체·충돌체도 핸들로 게임 객체와 연결했습니다. 공간 검색 결과에는 즉시 사용할 포인터와 나중에 다시 조회할 핸들을 함께 제공했습니다.
 
-```text
-Update에서 Destroy 요청
-        ↓
-PendingDestroy 설정 + Handle Queue 등록
-        ↓
-남은 Update에서 Pending 객체 호출 차단
-        ↓
-FrameEnd에서 Slot Reset + Generation 증가
-        ↓
-영향받은 Layer의 Handle 안정 압축
-```
+## 결과
 
-파괴 처리 중 소멸자가 또 다른 객체를 파괴할 수 있으므로 `Pending` Queue와 `Processing` Queue도 분리했다. 현재 순회 중인 메모리를 건드리지 않고 다음 처리 묶음으로 넘긴다.
-
-## Layer와 Update 경로 최적화
-
-Layer는 GameObject Pointer가 아니라 Handle 배열을 보관한다. Slot Index를 기준으로 객체의 Layer 위치를 병렬 저장해, 삭제할 때 모든 Layer를 다시 검색하지 않고 영향받은 Layer만 압축한다.
-
-또한 GameObject가 참여할 Update 단계는 Mask로 선언하고, 객체 구성이 바뀔 때만 단계별 Pointer View를 재구성한다.
-
-- `PriorityUpdate`
-- `FixedUpdate`
-- `Update`
-- `LateUpdate`
-
-일반 프레임의 Hot Loop에서는 전체 객체의 Mask를 반복 검사하지 않는다. Pointer View는 비소유이므로 객체가 실제 파괴된 다음 FrameStart 전에 반드시 재구축한다는 불변식을 함께 유지한다.
-
-## 운영 기능
-
-실제 레벨 전환과 Pooling 준비 과정에서 다음 기능도 같은 생명주기 규칙 위에 추가했다.
-
-- 지정 Layer만 Reset
-- 지정 Layer를 제외하고 Reset
-- Update 참여를 끄고 켜는 Managed Update
-- 이전 계층 API 호출부를 보존하는 Cascade 명칭의 호환 API
-- 빈 Slot, 점유 Slot, 무효 Handle을 확인하는 ImGui Debug View
-- FrameEnd에서 무효 Layer Handle 정리
-
-## 적용 사례
-
-- Effect 종료 Callback은 `this` 대신 Handle을 Capture하고, Callback 시점에 다시 조회한다.
-- PhysX Actor User Data도 GameObject 생포인터 대신 Handle로 소유 객체를 식별한다.
-- Query 결과에는 즉시 사용 Pointer와 보관 가능한 Handle을 함께 제공한다.
-- Object Pool은 객체를 Manager 밖으로 꺼내지 않고 Managed Update와 활성 상태를 전환한다.
-
-## 구현 결과 {/* #결과와-한계 */}
-
-외부 참조가 객체 파괴 이후 조용히 다른 메모리를 사용하는 대신, 조회 시점에 명확히 `nullptr`로 실패하게 됐다. 동시에 지연 파괴, Layer Reset, Pooling이 하나의 생명주기 규칙을 공유하게 됐다.
+외부 참조의 유효성 검사를 매니저의 공통 조회 경로에 모아 사용처마다 파괴 통지와 참조 해제 코드를 반복하는 부담을 줄였습니다. Free List로 빈 슬롯을 재사용하면서도 이전 핸들이 새 객체에 접근하지 않도록 했습니다. 레벨을 정리하거나 이펙트 종료 후 함수를 실행할 때도 핸들로 대상의 유효성을 확인했습니다.

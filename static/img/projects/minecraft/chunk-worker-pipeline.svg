@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="530" viewBox="0 0 1200 530" role="img" aria-labelledby="title desc">
+<title id="title">청크 생성의 메인 스레드와 워커 스레드 역할</title>
+<desc id="desc">위 행은 메인 스레드의 청크 선택과 완료 확인 및 GPU 버퍼 생성이고 아래 행은 워커 스레드의 블록·조명·메시 계산입니다. 작업 요청과 완료 확인이 두 행을 오가며 왼쪽에서 오른쪽으로 진행합니다.</desc>
+<defs>
+<marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#26778c"/></marker>
+<style>text{font-family:'Malgun Gothic',sans-serif;fill:#25313b;font-size:19px}.heading{font-size:24px;font-weight:700}.label{font-size:20px;font-weight:700}.arrow{stroke:#26778c;stroke-width:2;fill:none;marker-end:url(#arrow)}.guide{stroke:#c9d4da;stroke-width:1.5;fill:none}</style>
+</defs>
+<rect width="1200" height="530" fill="#ffffff"/>
+<text x="35" y="48" class="heading">청크 생성의 메인·워커 스레드 역할 분담</text>
+<path d="M175 115V495M175 305H1165" class="guide"/>
+<text x="88" y="205" text-anchor="middle" class="label">메인 스레드</text>
+<text x="88" y="435" text-anchor="middle" class="label">워커 스레드</text>
+<rect x="200" y="155" width="210" height="86" rx="3" fill="#f2f5f7"/><text x="305" y="189" text-anchor="middle" class="label">가까운 청크 선택</text><text x="305" y="221" text-anchor="middle">청크 생성·등록</text>
+<rect x="450" y="155" width="210" height="86" rx="3" fill="#f2f5f7"/><text x="555" y="189" text-anchor="middle" class="label">블록 생성 완료 확인</text><text x="555" y="221" text-anchor="middle">주변 조명 대상 지정</text>
+<rect x="700" y="155" width="210" height="86" rx="3" fill="#f2f5f7"/><text x="805" y="189" text-anchor="middle" class="label">조명 계산 완료 확인</text><text x="805" y="221" text-anchor="middle">메시 작업 요청</text>
+<rect x="950" y="155" width="210" height="86" rx="3" fill="#f2f5f7"/><text x="1055" y="189" text-anchor="middle" class="label">메시 계산 완료 확인</text><text x="1055" y="221" text-anchor="middle">GPU 버퍼 생성·표시</text>
+<rect x="325" y="385" width="210" height="86" rx="3" fill="#e3f0f3"/><text x="430" y="419" text-anchor="middle" class="label">블록 생성</text><text x="430" y="451" text-anchor="middle">지형의 블록 데이터</text>
+<path d="M305 241L410 372" class="arrow"/><path d="M450 372L555 241" class="arrow"/>
+<rect x="575" y="385" width="210" height="86" rx="3" fill="#e3f0f3"/><text x="680" y="419" text-anchor="middle" class="label">조명 계산</text><text x="680" y="451" text-anchor="middle">하늘광·블록광</text>
+<path d="M555 241L660 372" class="arrow"/><path d="M700 372L805 241" class="arrow"/>
+<rect x="825" y="385" width="210" height="86" rx="3" fill="#e3f0f3"/><text x="930" y="419" text-anchor="middle" class="label">메시 생성</text><text x="930" y="451" text-anchor="middle">노출 면의 정점·인덱스</text>
+<path d="M805 241L910 372" class="arrow"/><path d="M950 372L1055 241" class="arrow"/>
+</svg>

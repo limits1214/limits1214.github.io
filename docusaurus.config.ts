@@ -2,6 +2,8 @@ import {readdirSync} from 'node:fs';
 import {join} from 'node:path';
 
 import {themes as prismThemes} from 'prism-react-renderer';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
@@ -66,11 +68,13 @@ const config: Config = {
               breadcrumbs: false,
               showLastUpdateAuthor: false,
               showLastUpdateTime: false,
+              remarkPlugins: [remarkMath],
+              rehypePlugins: [rehypeKatex],
             }
           : false,
         blog: false,
         theme: {
-          customCss: './src/css/custom.css',
+          customCss: [require.resolve('katex/dist/katex.min.css'), './src/css/custom.css'],
         },
       } satisfies Preset.Options,
     ],
@@ -88,6 +92,8 @@ const config: Config = {
         breadcrumbs: false,
         showLastUpdateAuthor: false,
         showLastUpdateTime: false,
+        remarkPlugins: [remarkMath],
+        rehypePlugins: [rehypeKatex],
       },
     ],
   ],

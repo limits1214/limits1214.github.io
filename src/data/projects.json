@@ -40,7 +40,7 @@
     "githubUrl": "https://github.com/limits1214/minecraft-dx11",
     "title": "Minecraft",
     "period": "2026.04 – 2026.06",
-    "description": "C++20·DirectX 11 자체 엔진으로 절차적 복셀 월드, 비동기 청크 로딩, 블록 설치·파괴와 생존 게임플레이를 구현한 1인 프로젝트입니다.",
+    "description": "C++20·DirectX 11 기반으로 절차적 복셀 월드, 비동기 청크 로딩, 블록 설치·파괴와 생존 게임플레이를 구현한 1인 프로젝트입니다.",
     "role": "프레임워크 · 복셀 월드 · 렌더링 · 게임플레이",
     "teamSize": "1명",
     "platform": "Windows x64",

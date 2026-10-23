@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="765" viewBox="0 0 1100 765" role="img" aria-labelledby="title desc">
+  <title id="title">하나의 Rust 판정 코드와 두 실행 환경</title>
+  <desc id="desc">공용 Rust 라이브러리를 웹에서는 WebAssembly로 빌드해 JsBoard로 호출하고 서버에서는 직접 사용합니다. 웹의 이동 입력과 서버가 받은 이동 액션은 같은 규칙으로 판정하지만 각자의 보드 상태에 결과를 반영합니다.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#26778c"/></marker>
+    <style>
+      text{font-family:'Malgun Gothic',sans-serif;fill:#25313b;font-size:20px}
+      .heading{font-size:24px;font-weight:700}
+      .label{font-size:21px;font-weight:700}
+      .small{font-size:17px;fill:#52616b}
+      .arrow{stroke:#26778c;stroke-width:2;fill:none;marker-end:url(#arrow)}
+      .rule{stroke:#acbbc2;stroke-width:1.5;fill:none}
+    </style>
+  </defs>
+  <rect width="1100" height="765" fill="#ffffff"/>
+  <text x="40" y="49" class="heading">판정 코드는 하나로 관리하고 실행은 각 환경에서</text>
+  <text x="40" y="85" class="small">이동·회전·충돌 규칙을 Rust 라이브러리로 분리했습니다.</text>
+
+  <rect x="270" y="125" width="560" height="115" rx="3" fill="#eef3f5"/>
+  <text x="550" y="163" text-anchor="middle" class="label">공용 보드 판정 코드 · tetris-lib</text>
+  <text x="550" y="199" text-anchor="middle">이동 가능 여부 확인 → 보드 상태 변경</text>
+  <text x="550" y="227" text-anchor="middle" class="small">Rust Board</text>
+  <path d="M550 240V270H285V320" class="arrow"/>
+  <path d="M550 270H815V320" class="arrow"/>
+  <text x="285" y="260" text-anchor="middle" class="small">WebAssembly로 빌드</text>
+  <text x="815" y="260" text-anchor="middle" class="small">Rust 라이브러리로 사용</text>
+
+  <text x="285" y="358" text-anchor="middle" class="label">웹 클라이언트</text>
+  <text x="815" y="358" text-anchor="middle" class="label">서버</text>
+  <rect x="65" y="380" width="440" height="66" rx="3" fill="#f2f5f7"/>
+  <rect x="595" y="380" width="440" height="66" rx="3" fill="#f2f5f7"/>
+  <text x="285" y="421" text-anchor="middle">왼쪽 이동 입력</text>
+  <text x="815" y="421" text-anchor="middle">왼쪽 이동 액션 수신</text>
+  <path d="M285 446V480" class="arrow"/>
+  <path d="M815 446V480" class="arrow"/>
+
+  <rect x="65" y="496" width="440" height="111" rx="3" fill="#e3f0f3"/>
+  <rect x="595" y="496" width="440" height="111" rx="3" fill="#e3f0f3"/>
+  <text x="285" y="535" text-anchor="middle" class="label">JsBoard → Board</text>
+  <text x="815" y="535" text-anchor="middle" class="label">TetrisGame → Board</text>
+  <text x="285" y="574" text-anchor="middle">Wasm으로 같은 판정 코드 실행</text>
+  <text x="815" y="574" text-anchor="middle">Rust로 같은 판정 코드 실행</text>
+  <path d="M285 607V644" class="arrow"/>
+  <path d="M815 607V644" class="arrow"/>
+
+  <rect x="65" y="660" width="440" height="66" rx="3" fill="#f2f5f7"/>
+  <rect x="595" y="660" width="440" height="66" rx="3" fill="#f2f5f7"/>
+  <text x="285" y="701" text-anchor="middle">웹이 가진 보드 상태에 반영</text>
+  <text x="815" y="701" text-anchor="middle">서버가 가진 보드 상태에 반영</text>
+
+</svg>

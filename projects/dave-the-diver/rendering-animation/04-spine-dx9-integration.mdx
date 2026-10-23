@@ -1,7 +1,7 @@
 ---
 id: dave-spine-dx9-integration
 project: dave-the-diver
-title: Spine 애니메이션의 DirectX 9 엔진 통합
+title: Spine 기반 물고기 애니메이션 구현
 description: Spine 공유 리소스와 개체별 재생 상태를 분리하고, MeshAttachment를 동적 정점·인덱스 버퍼로 연결한 물고기 렌더링 구현
 slug: /dave-the-diver/spine-dx9-integration
 order: 40
@@ -13,116 +13,63 @@ tags:
   - Animation
 ---
 
-# Spine 애니메이션의 DirectX 9 엔진 통합
+# Spine 기반 물고기 애니메이션 구현
 
-## 배경과 목표 {/* #해결하려던-문제 */}
+## 문제 상황
 
-물고기의 몸과 지느러미가 움직이는 애니메이션을 자체 DirectX 9 엔진에서 재생해야 했다. 같은 어종의 데이터를 매번 읽지 않으면서도, 개체별로 유영·사망 등 다른 애니메이션을 재생할 수 있어야 했다.
+데이브 더 다이버에서 물고기가 몸과 지느러미를 움직이며 역동적으로 헤엄치는 모습을 모작에도 꼭 담고 싶었습니다. 텍스처를 이동시키는 것만으로는 그 움직임을 표현하기 어려워 애니메이션 구현 방법을 찾아봤고 Spine 라이브러리를 DirectX 9 기반 프로젝트에 통합하게 됐습니다.
 
-Spine C++ 런타임을 엔진의 Asset·Component·Buffer 구조에 연결했다. 애니메이션 평가와 스키닝 계산은 Spine에 맡기고, 파일·텍스처 로딩, 인스턴스 구성, DirectX 정점 변환·업로드와 물고기 상태 연동을 구현했다.
+Spine을 도입하려면 기존 엔진의 리소스 관리와 렌더링 구조에 연결해야 했습니다. 같은 어종이라도 물고기마다 다른 동작을 재생할 수 있어야 했습니다.
 
-## 공유 데이터와 개체별 상태
+## 접근 방법 검토
 
-| 구성 요소 | 보관하는 정보 |
+애니메이션 재생과 본의 움직임에 맞춰 메시를 변형하는 계산은 Spine C++ 런타임에 맡겼습니다. 저는 파일·텍스처 로딩과 물고기별 재생 상태 및 기존 렌더러와의 연결을 구현했습니다.
+
+| 구성 요소 | 역할 |
 | --- | --- |
-| `CAssetSpine` | Atlas, SkeletonData, AnimationStateData, 초기 정점·삼각형 수 |
-| `CSpine` | 개체별 Skeleton·AnimationState, 밝기·피격 표시 값 |
-| `CDynamicBuffer` | 해당 개체를 그릴 DirectX 정점·인덱스 버퍼 |
-| `CFishGameObject` | 어종 리소스 선택, Transform, 행동에 따른 애니메이션 요청 |
+| `CAssetSpine` | 같은 어종이 공유하는 텍스처 배치와 본·애니메이션 원본 데이터 |
+| `CSpine` | 물고기별 현재 자세와 애니메이션 재생 상태 |
+| `CDynamicBuffer` | 변형된 메시를 GPU에 전달할 물고기별 버퍼 |
+| `CFishGameObject` | 물고기의 행동에 맞는 애니메이션 요청 |
 
-`CSpine::Clone()`의 복사 생성자는 Skeleton과 AnimationState 포인터를 복사하지 않고 nullptr로 시작한다. 이후 `Ready_AfterCreate()`에서 공유 데이터로부터 두 런타임 인스턴스를 새로 만든다. 같은 리소스를 사용하는 물고기도 재생 Track과 자세를 독립적으로 가진다.
+원본 데이터는 공유하되 현재 자세를 담는 `Skeleton`과 재생 상태를 담는 `AnimationState` 및 정점 버퍼는 물고기마다 따로 만들었습니다. 한 물고기의 동작이 다른 물고기의 자세를 덮어쓰지 않도록 했습니다.
 
-`CAssetSpine`에도 테스트용 Skeleton·AnimationState와 `TempUpdate()` 등이 남아 있다. 일부 테스트 객체의 경로와 실제 물고기의 `CSpine` 경로는 구분해야 한다. 여기서는 `CFishGameObject::Ready()`에서 연결되는 컴포넌트 경로를 기준으로 설명한다.
+![Spine 원본을 공유하면서 물고기별 자세와 재생 상태 및 정점 버퍼를 분리한 구조](/img/projects/dave-the-diver/spine-shared-instance.svg)
 
-## Atlas와 Skeleton 파일을 엔진 리소스로 읽기
+## 해결 과정
 
-`CAssetSpine::Load()`는 기본 경로에 `.atlas.txt`, `.skel.bytes`를 붙여 파일명을 만든다. Atlas를 먼저 만들고, 이를 사용하는 `SkeletonBinary`로 SkeletonData를 읽은 뒤 AnimationStateData를 생성한다.
+### 엔진 리소스 로더에 연결
 
-```text
-기본 리소스 경로
-  → Atlas 로드 → TextureLoader가 엔진 텍스처 등록
-  → SkeletonBinary로 SkeletonData 로드
-  → AnimationStateData 생성
-  → 초기 MeshAttachment의 정점·삼각형 수 계산
-```
+텍스처의 배치 정보를 담은 Atlas를 먼저 읽고 본과 애니메이션 데이터를 불러왔습니다. Spine이 텍스처를 요청하면 기존 엔진의 `CAssetTexture`로 로드하도록 `spine::TextureLoader`를 연결하고 이미지 크기도 전달했습니다.
 
-엔진 텍스처 연결은 `spine::TextureLoader`를 상속한 `CMySpineTextureLoader`에서 처리한다. Atlas가 요청한 이미지 경로를 `CAssetTexture`에 전달하고, 이미지 크기를 AtlasPage에 기록한다. 텍스처 키는 파일명 앞에 `SpineTex_`를 붙여 만든다.
+물고기 초기화에서는 선택한 어종의 정점·삼각형 수에 맞춰 버퍼를 준비했습니다. 정점에는 위치와 색상 및 텍스처 좌표를 담고 삼각형 연결 정보에는 16비트 인덱스를 사용했습니다. 매 프레임 변하는 정점을 갱신할 수 있도록 동적 버퍼로 생성했습니다.
 
-로더는 텍스처 이름 하나를 보관하고, 렌더링할 때 그 이름으로 텍스처를 바인딩한다.
+### 애니메이션 재생과 렌더링 연결
 
-## 물고기 초기화와 버퍼 준비
+갱신 단계에서는 재생 시간을 진행하고 `Skeleton`에 애니메이션을 적용한 뒤 부모·자식 본의 움직임을 반영해 최종 자세를 계산했습니다.
 
-`CFishGameObject::Ready()`는 Transform·동적 버퍼·Spine 컴포넌트를 복제하고, 선택한 `CAssetSpine`에서 정점 수와 삼각형 수를 읽어 버퍼를 준비한다. 그다음 개체별 Spine 상태를 만들고 인덱스 버퍼를 채운다.
-
-동적 버퍼의 Prototype 설정은 다음과 같다.
-
-| 항목 | 설정 |
-| --- | --- |
-| Usage | `D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY` |
-| Pool | `D3DPOOL_DEFAULT` |
-| Vertex | `VTXCOLTEX` · 위치, 색, UV |
-| Index | `INDEX16` · 16-bit Index 세 개로 삼각형 구성 |
-
-`CDynamicBuffer`는 일반 `CVIBuffer`처럼 기존 버퍼에 AddRef하여 공유하는 대신, 복제 시 새 버퍼를 준비하는 방향으로 작성했다. 물고기는 자신의 변형 정점을 다른 개체와 같은 버퍼에 덮어쓰지 않는다.
-
-컴포넌트의 `ID_STATIC` 분류는 이 버퍼가 GPU에서 정적이라는 뜻이 아니다. 해당 분류로 등록해도 Prototype은 Clone되며, 실제 GPU Usage는 위 설정을 따른다. `CSpine`은 `ID_DYNAMIC`으로 등록되어 GameObject의 컴포넌트 Update를 받는다.
-
-## 애니메이션 평가와 정점 추출 분리
-
-Update 단계에서는 다음 Spine API를 순서대로 호출한다.
-
-```cpp title="CSpine.cpp · Update_Component"
+```cpp title="CSpine.cpp의 애니메이션 갱신"
 m_pAniState->update(fTimeDelta);
 m_pAniState->apply(*m_pSkeleton);
 m_pSkeleton->updateWorldTransform();
 ```
 
-재생 시간을 진행하고, 애니메이션을 Skeleton에 적용한 뒤 본 계층의 변환을 갱신한다. 실제 정점 추출과 GPU 업로드는 이후 Render에서 수행한다.
+렌더 단계에서는 Spine이 정한 그리기 순서대로 메시를 읽고 `computeWorldVertices()`로 변형된 정점을 얻었습니다. Spine이 계산한 자세에 물고기의 게임 내 위치와 회전을 반영하도록 월드 변환을 적용했습니다.
 
-```text
-GameObject Update → AnimationState 평가 → Skeleton 본 변환
-Render → MeshAttachment 변형 정점 계산 → VB 업로드 → Draw
-```
-
-이 구조는 GPU 스키닝이 아니다. Spine 런타임이 CPU에서 최종 정점 좌표를 계산하고, DirectX에는 그릴 좌표를 전달한다. 라이브러리 함수의 World Vertices는 Skeleton의 변환 결과이며, 게임 월드 배치는 별도로 물고기의 World Matrix를 설정해 적용한다.
-
-## MeshAttachment를 DirectX 정점으로 변환
-
-`Vertex_Buffer_Lock()`은 Skeleton의 Draw Order를 순회하며 `MeshAttachment`인 항목만 처리한다. 각 Mesh에 `computeWorldVertices()`를 호출하고 결과를 엔진의 `VTXCOLTEX`에 기록한다.
-
-| DirectX 정점 항목 | 데이터 출처 |
+| DirectX 정점 | 변환한 데이터 |
 | --- | --- |
-| Position X·Y | Spine이 계산한 2D 정점 좌표 |
-| Position Z | 0 |
-| UV | MeshAttachment의 UV |
-| Color | Skeleton·Slot·Mesh 색과 컴포넌트 밝기 |
+| 위치 | Spine이 계산한 X·Y와 Z=0 |
+| 텍스처 좌표(UV) | Spine 메시의 텍스처 좌표 |
+| 색상 | Spine 전체와 각 부위 및 메시에 지정된 색상을 곱하고 밝기 반영 |
 
-정점 버퍼는 `D3DLOCK_DISCARD`로 Lock하고 정해진 영역을 다시 채운다. 정점 추출용 `static std::vector<float>`는 필요한 크기보다 작을 때만 늘려 임시 배열을 매 Mesh마다 새로 만들지 않게 했다. 대신 이 임시 메모리는 인스턴스들이 공유하므로 동시 호출에 안전한 구현은 아니다.
+물고기를 구성하는 여러 메시를 하나의 버퍼에 모았습니다. 이때 각 삼각형이 올바른 정점을 가리키도록 인덱스에 해당 메시의 시작 위치를 더했습니다. 삼각형 연결 정보는 초기화할 때 채우고 매 프레임에는 `D3DLOCK_DISCARD`로 이전 정점 데이터를 교체했습니다. 계산에 사용하는 임시 배열은 필요한 용량이 늘어날 때만 확장해 재사용했습니다.
 
-인덱스도 같은 순서로 Mesh의 삼각형을 복사하면서 `vOffset`을 더한다. 각 Mesh 내부의 로컬 Index를 하나의 버퍼에 연결하는 방식이다. 물고기 초기화에서 인덱스를 한 번 채우고, 일반 `Render_Spine()`에서는 정점만 갱신한다.
+### 행동과 피격 표현 연결
 
-따라서 초기 Attachment 구성과 연결 관계가 유지되는 애니메이션을 전제로 한다. 재생 도중 Attachment·Draw Order·정점 수가 바뀌면 초기 인덱스와 버퍼 크기가 현재 정점 배열과 맞지 않을 수 있다.
+물고기의 행동에서 `swim`과 `die` 같은 애니메이션 이름과 반복 여부를 전달했습니다. 같은 애니메이션을 매 프레임 다시 시작하지 않도록 행동 상태가 바뀔 때 애니메이션 전환을 요청했습니다.
 
-## 한 개체를 한 번의 Indexed Draw로 표시
+밝기와 투명도는 정점 색에 반영했습니다. 피격 시에는 텍스처 색 대신 흰색 정점 색을 사용하도록 렌더링 설정을 바꿔 물고기를 하얗게 표시했습니다. 그린 뒤에는 텍스처 색과 정점 색을 곱하는 원래 설정으로 복구해 다른 객체의 렌더링에 영향을 주지 않도록 했습니다.
 
-`Render_Spine()`은 Asset 이름으로 텍스처를 조회해 바인딩하고, 정점 갱신 후 `CDynamicBuffer::Render_Buffer()`를 호출한다. 그 아래에서는 FVF·Vertex Buffer·Index Buffer를 설정하고 `DrawIndexedPrimitive(D3DPT_TRIANGLELIST, ...)`로 그린다.
+## 결과
 
-물고기 하나의 Mesh들을 한 버퍼에 연결한 것이며, 여러 물고기를 한 번에 그리는 GPU Instancing은 아니다. 각 Slot의 Blend Mode나 Atlas Page가 다를 때 Draw를 분리하는 처리도 없다.
-
-이 때문에 현재 사용 리소스의 Mesh·텍스처 구조에 맞춘 통합이라는 점이 중요하다. `RegionAttachment`, Clipping 등 MeshAttachment 외의 표현은 해당 순회에서 건너뛴다. Spine 런타임이 지원하는 모든 렌더 기능과 자체 엔진에서 구현한 범위는 다르다.
-
-## 물고기 상태와 시각 피드백
-
-`Set_AniState()`는 Track 0에 애니메이션 이름과 Loop 여부를 전달한다. 물고기는 유영 때 `swim`, 사망 때 `die`를 비반복으로 요청한다. 다른 이동 상태의 애니메이션 이름은 어종 설정과 공통 행동 코드에서 선택한다.
-
-초기화에서는 기본 Mix 시간을 0.1초로 설정한다. 이 설정은 개체가 독립 소유한 AnimationState가 아니라 전달받은 공유 AnimationStateData를 변경한다. 또한 `Set_AniState()` 자체에는 같은 이름이면 무시하는 방어가 없으므로 호출자가 매 프레임 같은 애니메이션을 다시 시작하지 않도록 해야 한다.
-
-기본 정점 색은 Skeleton·Slot·Mesh의 색을 곱하고 RGB에 `m_fDarkness`를 적용한다. Alpha에는 각 색의 Alpha를 곱한다. 피격 시에는 별도의 `m_bColorWhite`를 켜서 정점 RGB를 흰색으로 만든다.
-
-흰 정점 색만으로는 텍스처의 원래 색이 사라지지 않으므로, 물고기의 Render에서 Texture Stage의 Color 연산도 `SELECTARG2`·`DIFFUSE`로 바꾼다. 렌더 후에는 `MODULATE`로 복구한다. 색 계산과 렌더 상태를 함께 조절해 피격 플래시를 만든 것이다. 혈흔 파티클은 별도 구현을 사용했다.
-
-## 애니메이션 디버깅 {/* #디버깅과-사용상-주의점 */}
-
-컴포넌트 ImGui에서는 밝기를 조절하고 SkeletonData의 애니메이션 목록에서 재생 항목을 선택할 수 있다. 현재 애니메이션 이름·길이도 표시해 게임 행동과 별도로 리소스 재생을 확인하도록 했다.
-
-외부 애니메이션 런타임을 자체 엔진의 수명·렌더 경로에 연결했다. 개체별로 애니메이션 평가와 Mesh 정점 계산, 버퍼 업로드와 Draw를 수행하며 임시 배열은 재사용하도록 했다.
+몸과 지느러미가 변형되는 유영 애니메이션을 기존 렌더러에 연결했습니다. 물고기별 행동에 따라 유영과 사망 동작을 전환하고 피격 시 색상 변화도 함께 표현했습니다.

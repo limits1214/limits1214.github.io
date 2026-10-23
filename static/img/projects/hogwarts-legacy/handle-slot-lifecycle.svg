@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="820" viewBox="0 0 1100 820" role="img" aria-labelledby="title desc">
+  <title id="title">핸들 조회와 슬롯 재사용</title>
+  <desc id="desc">인덱스 2와 세대 7을 가진 핸들은 슬롯 2의 객체 A를 조회합니다. A를 삭제하면 세대를 8로 올리고 빈 슬롯 번호를 Free List에 반환합니다. 같은 슬롯에 B를 저장해도 이전 핸들은 세대가 달라 조회에 실패합니다.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#26778c"/></marker>
+    <style>
+      text{font-family:'Malgun Gothic',sans-serif;fill:#25313b;font-size:20px}
+      .heading{font-size:24px;font-weight:700}
+      .small{font-size:17px;fill:#52616b}
+      .label{font-size:19px;font-weight:700}
+      .border{stroke:#acbbc2;stroke-width:1.5;fill:none}
+      .arrow{stroke:#26778c;stroke-width:2;fill:none;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1100" height="820" fill="#ffffff"/>
+  <text x="40" y="49" class="heading">핸들 조회와 슬롯 재사용</text>
+  <text x="40" y="85" class="small">객체는 매니저가 소유하고 외부에서는 인덱스와 세대 번호만 보관합니다.</text>
+  <text x="40" y="140" class="label">01. 인덱스로 찾고 세대 번호로 확인</text>
+
+  <rect x="40" y="182" width="260" height="130" rx="3" fill="#f2f5f7"/>
+  <text x="170" y="216" text-anchor="middle" class="label">외부 객체의 핸들</text>
+  <path d="M60 231H280" class="border"/>
+  <text x="170" y="264" text-anchor="middle">인덱스 2 · 세대 7</text>
+  <text x="170" y="294" text-anchor="middle" class="small">객체의 소유권 없음</text>
+  <path d="M310 255H420" class="arrow"/>
+  <text x="365" y="236" text-anchor="middle" class="small">조회</text>
+
+  <text x="600" y="174" text-anchor="middle" class="label">매니저의 슬롯 배열</text>
+  <rect x="440" y="190" width="330" height="40" fill="#eef3f5"/>
+  <rect x="440" y="310" width="330" height="40" fill="#e3f0f3"/>
+  <rect x="440" y="190" width="330" height="160" class="border"/>
+  <path d="M440 230H770M440 270H770M440 310H770M530 190V350M630 190V350" class="border"/>
+  <text x="485" y="217" text-anchor="middle" class="small">인덱스</text>
+  <text x="580" y="217" text-anchor="middle" class="small">세대</text>
+  <text x="700" y="217" text-anchor="middle" class="small">소유 객체</text>
+  <text x="485" y="258" text-anchor="middle">0</text><text x="580" y="258" text-anchor="middle">2</text><text x="700" y="258" text-anchor="middle">객체 P</text>
+  <text x="485" y="298" text-anchor="middle">1</text><text x="580" y="298" text-anchor="middle">4</text><text x="700" y="298" text-anchor="middle">객체 Q</text>
+  <text x="485" y="338" text-anchor="middle">2</text><text x="580" y="338" text-anchor="middle">7</text><text x="700" y="338" text-anchor="middle">객체 A</text>
+  <path d="M785 330H845" class="arrow"/>
+  <text x="950" y="316" text-anchor="middle">세대 일치</text>
+  <text x="950" y="349" text-anchor="middle" class="label">객체 A 반환</text>
+  <path d="M40 393H1060" class="border"/>
+
+  <text x="40" y="440" class="label">02. 빈 슬롯은 재사용하고 이전 핸들은 구분</text>
+  <rect x="40" y="477" width="280" height="135" rx="3" fill="#f2f5f7"/>
+  <text x="180" y="514" text-anchor="middle" class="label">객체 A 삭제</text>
+  <text x="180" y="549" text-anchor="middle">슬롯 2는 유지</text>
+  <text x="180" y="584" text-anchor="middle">세대 7 → 8</text>
+  <path d="M335 544H395" class="arrow"/>
+
+  <rect x="410" y="477" width="280" height="135" rx="3" fill="#f2f5f7"/>
+  <text x="550" y="514" text-anchor="middle" class="label">Free List</text>
+  <text x="550" y="549" text-anchor="middle">빈 슬롯 번호 [ …, 2 ]</text>
+  <text x="550" y="584" text-anchor="middle" class="small">다음 생성에서 꺼내 재사용</text>
+  <path d="M705 544H765" class="arrow"/>
+
+  <rect x="780" y="477" width="280" height="135" rx="3" fill="#e3f0f3"/>
+  <text x="920" y="514" text-anchor="middle" class="label">객체 B 생성</text>
+  <text x="920" y="549" text-anchor="middle">같은 슬롯 2 사용</text>
+  <text x="920" y="584" text-anchor="middle">새 핸들 { 2, 8 }</text>
+
+  <path d="M920 625V673H730" class="arrow"/>
+  <text x="40" y="681">이전 핸들 { 2, 7 }로 다시 조회</text>
+  <path d="M390 673H465" class="arrow"/>
+  <text x="485" y="681" class="label">세대 불일치 → nullptr</text>
+  <text x="40" y="749" class="small">인덱스가 같아도 세대가 다르면 새 객체에 접근할 수 없습니다.</text>
+  <text x="40" y="784" class="small">Free List가 비어 있을 때만 슬롯 배열을 늘립니다.</text>
+</svg>

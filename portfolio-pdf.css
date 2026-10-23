@@ -1,15 +1,15 @@
 @page { size: A4; margin: 17mm 17mm 19mm; }
 * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-body { margin: 0; color: #25313b; font-family: 'Malgun Gothic', sans-serif; font-size: 10pt; line-height: 1.75; word-break: keep-all; overflow-wrap: anywhere; }
+body { margin: 0; color: #25313b; font-family: 'Malgun Gothic', sans-serif; font-size: 10pt; line-height: 1.6; word-break: keep-all; overflow-wrap: anywhere; }
 h1, h2, h3, h4 { color: #122b3d; break-after: avoid; }
 h1 { font-size: 24pt; line-height: 1.38; letter-spacing: -1px; margin: 3mm 0; }
-h2 { font-size: 13pt; line-height: 1.5; margin: 7mm 0 2.5mm; padding-bottom: 1.5mm; border-bottom: 1px solid #dce5e9; }
-h3 { font-size: 10.8pt; margin: 5mm 0 2mm; }
-p { margin: 0 0 3mm; orphans: 3; widows: 3; break-inside: avoid; }
+h2 { font-size: 13pt; line-height: 1.5; margin: 6mm 0 2.5mm; padding-bottom: 1.5mm; border-bottom: 1px solid #dce5e9; }
+h3 { font-size: 10.8pt; margin: 4mm 0 2mm; }
+p { margin: 0 0 2.5mm; orphans: 3; widows: 3; break-inside: avoid; }
 a { color: #116c87; text-decoration: none; }
 ul, ol { margin: 2mm 0 4mm; padding-left: 6mm; break-inside: avoid; }
 li { margin-bottom: 1mm; }
-pre { font: 8.4pt/1.6 Consolas, 'Malgun Gothic', monospace; padding: 3mm 4mm; margin: 3mm 0 4mm; background: #f2f5f7; border-left: 2px solid #26778c; border-radius: 0; white-space: pre-wrap; overflow-wrap: anywhere; word-break: normal; break-inside: avoid; }
+pre { font: 8.4pt/1.45 Consolas, 'Malgun Gothic', monospace; padding: 2.5mm 4mm; margin: 2.5mm 0 3mm; background: #f2f5f7; border-left: 2px solid #26778c; border-radius: 0; white-space: pre-wrap; overflow-wrap: anywhere; word-break: normal; break-inside: avoid; }
 code { font-family: Consolas, 'Malgun Gothic', monospace; font-size: .93em; }
 p code, li code, td code { color: #18556d; }
 pre code { font-size: inherit; }
@@ -42,7 +42,10 @@ img, svg { max-width: 100%; height: auto; break-inside: avoid; }
 .compact-profile .cover-rule { margin-bottom: 5mm; }
 .compact-profile h1 { font-size: 34pt; margin: 2mm 0 4mm; }
 .compact-profile .aspiration { font-size: 12pt; margin-bottom: 3mm; }
-.compact-profile .projects { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; margin-top: 7mm; }
-.compact-profile .project-card { margin: 0; padding: 4mm; }
-.compact-profile .project-card p { font-size: 8.5pt; }
-.compact-profile .contents { margin-top: 7mm; }
+.compact-profile .projects { display: grid; grid-template-columns: 1fr 1fr; gap: 2mm; margin-top: 5mm; }
+.compact-profile .project-card { margin: 0; padding: 2.5mm 3mm; }
+.compact-profile .project-card h2 { font-size: 10.5pt; }
+.compact-profile .project-card p { font-size: 8pt; line-height: 1.55; margin: 1mm 0 0; }
+.compact-profile .repository-link { margin-top: 1mm; }
+.compact-profile .contents { margin-top: 4mm; }
+.compact-profile .contents li { padding: 1.5mm 0; font-size: 9pt; }
