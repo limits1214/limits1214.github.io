@@ -11,7 +11,6 @@ export default function Home(): React.JSX.Element {
       description="임성윤(Limits1214)의 게임 클라이언트·엔진 개발 포트폴리오">
       <main className={styles.page}>
         <section className={styles.hero}>
-          <p className={styles.eyebrow}>C++ GAME CLIENT · ENGINE</p>
           <Heading as="h1" className={styles.title}>
             임성윤
           </Heading>
