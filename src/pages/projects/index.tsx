@@ -1,11 +1,14 @@
 import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
+import {useBaseUrlUtils} from '@docusaurus/useBaseUrl';
 
 import {projects} from '@site/src/data/projects';
 import styles from '../section.module.css';
 
 export default function Projects(): React.JSX.Element {
+  const {withBaseUrl} = useBaseUrlUtils();
+
   return (
     <Layout
       title="Projects"
@@ -24,18 +27,31 @@ export default function Projects(): React.JSX.Element {
             {projects.map((project) => (
               <Link
                 key={project.slug}
-                className={styles.card}
+                className={`${styles.card} ${styles.projectCard}`}
                 to={`/projects/${project.slug}`}>
-                <div>
-                  <Heading as="h2" className={styles.cardTitle}>
-                    {project.title}
-                  </Heading>
-                  <p className={styles.cardPeriod}>{project.period}</p>
-                  <p className={styles.cardDescription}>
-                    {project.description}
-                  </p>
+                {project.thumbnail && (
+                  <img
+                    className={styles.cardThumbnail}
+                    src={withBaseUrl(project.thumbnail)}
+                    alt={project.thumbnailAlt ?? `${project.title} 대표 화면`}
+                    width={640}
+                    height={360}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                )}
+                <div className={styles.cardContent}>
+                  <div>
+                    <Heading as="h2" className={styles.cardTitle}>
+                      {project.title}
+                    </Heading>
+                    <p className={styles.cardPeriod}>{project.period}</p>
+                    <p className={styles.cardDescription}>
+                      {project.description}
+                    </p>
+                  </div>
+                  <span className={styles.cardLink}>프로젝트 보기 →</span>
                 </div>
-                <span className={styles.cardLink}>프로젝트 보기 →</span>
               </Link>
             ))}
           </section>

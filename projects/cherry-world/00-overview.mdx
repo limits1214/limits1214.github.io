@@ -17,7 +17,7 @@ tags:
 
 ## 개요 {/* #article-introduction */}
 
-C\*erry World는 기존 C\*erry의 걷기 기능인 C\*erry Walk를 기반으로 만들어진 서비스다. 이\*넷의 C\*erry 부서에서 분사한 주식회사 C\*erry에서 신규 앱 출시와 유지보수에 참여했으며, iOS 개발을 전담하고 Android·iOS 광고 연계를 담당했다.
+C\*erry World는 기존 C\*erry의 걷기 기능인 C\*erry Walk를 기반으로 만들어진 서비스입니다. 이\*넷의 C\*erry 부서에서 분사한 주식회사 C\*erry에서 신규 앱 출시와 유지보수에 참여했으며, iOS 개발을 전담하고 Android·iOS 광고 연계를 담당했습니다.
 
 | 항목 | 내용 |
 | --- | --- |
@@ -31,19 +31,19 @@ C\*erry World는 기존 C\*erry의 걷기 기능인 C\*erry Walk를 기반으로
 
 ### 1. Apple 로그인 마이그레이션과 장애 대응
 
-계정 이전 후 기존 사용자가 신규 가입으로 이어지는 문제에 대응했다. 변경 전후 식별정보를 매핑하고 LDAP·RDB 갱신 중 발생한 SQL 오류와 계정 중복을 추적했다.
+계정 이전 후 기존 사용자가 신규 가입으로 이어지는 문제에 대응했습니다. 변경 전후 식별정보를 매핑하고 LDAP·RDB 갱신 중 발생한 SQL 오류와 계정 중복을 추적했습니다.
 
 [대상 선정·갱신·재처리 과정 읽기](/projects/cherry-world/apple-login-migration)
 
-서로 다른 저장소와 로그인 진입점을 함께 살펴야 했던 사례다. 매핑 성공 건수와 최종 로그인 성공은 구분하며, 초기 이전 과정에서 놓친 조건과 대응도 함께 설명한다.
+서로 다른 저장소와 로그인 진입점을 함께 살펴야 했던 사례입니다. 매핑 성공 건수와 최종 로그인 성공은 구분하며, 초기 이전 과정에서 놓친 조건과 대응도 함께 설명합니다.
 
 ### 2. 대용량 배치로 드러난 스레드 풀 누적 분석
 
-주간 Pod 재시작 중에는 드러나지 않던 문제가 C\*erry World의 대용량 배치에서 나타났다. 로그·덤프를 타이머별 풀 생성과 종료 누락에 연결해 원인을 분석했다.
+주간 Pod 재시작 중에는 드러나지 않던 문제가 C\*erry World의 대용량 배치에서 나타났습니다. 로그·덤프를 타이머별 풀 생성과 종료 누락에 연결해 원인을 분석했습니다.
 
 [증상 완화에서 자원 수명 분석까지 읽기](/projects/cherry-world/native-thread-exhaustion)
 
-기존 타이머 로직의 자원 누적을 덤프로 추적했다.
+기존 타이머 로직의 자원 누적을 덤프로 추적했습니다.
 
 ## 관련 문서 {/* #관심-분야에-따라-이어-읽기 */}
 
@@ -58,25 +58,25 @@ C\*erry World는 기존 C\*erry의 걷기 기능인 C\*erry Walk를 기반으로
 
 ## 앱 이전 작업의 실제 기록
 
-분사 과정에서는 기존 C\*erry 앱의 개발자 계정을 이전하는 운영 업무도 맡았다. 아래는 2023년 1월에 남긴 이전 신청과 완료 안내다.
+분사 과정에서는 기존 C\*erry 앱의 개발자 계정을 이전하는 운영 업무도 맡았습니다. 아래는 2023년 1월에 남긴 이전 신청과 완료 안내입니다.
 
 [![Google Play 앱 이전 완료를 안내한 2023년 1월 6일 메일](/img/work-evidence/android-app-transfer-complete.png)](/img/work-evidence/android-app-transfer-complete.png)
 
-*당시 보관한 Google Play의 이전 완료 안내.* 수신·참조 계정과 문의 식별번호를 가렸다. 완료 안내에도 연결된 개발자 프로젝트와 광고 SDK를 별도로 확인하라는 내용이 있다. 계정 이전과 별개로 연계 기능의 동작도 점검해야 했다.
+*당시 보관한 Google Play의 이전 완료 안내.* 수신·참조 계정과 문의 식별번호를 가렸습니다. 완료 안내에도 연결된 개발자 프로젝트와 광고 SDK를 별도로 확인하라는 내용이 있습니다. 계정 이전과 별개로 연계 기능의 동작도 점검해야 했습니다.
 
 <details>
 <summary>Google Play 앱 이전 신청 화면</summary>
 
 [![이전 전후 개발자 계정과 대상 앱을 지정한 Google Play 신청 화면](/img/work-evidence/android-app-transfer-form.png)](/img/work-evidence/android-app-transfer-form.png)
 
-*「앱 이전기」의 신청 캡처.* 거래 ID, 개발자 계정, 앱 이름·아이콘·패키지 식별자는 가렸다. 신청 화면과 위의 완료 안내를 구분해 남겼다. 가입 서류·신분·결제 자료는 첨부하지 않았다.
+*「앱 이전기」의 신청 캡처.* 거래 ID, 개발자 계정, 앱 이름·아이콘·패키지 식별자는 가렸습니다. 신청 화면과 위의 완료 안내를 구분해 남겼습니다. 가입 서류·신분·결제 자료는 첨부하지 않았습니다.
 
 </details>
 
-앱 이전 이후 발생한 로그인 식별정보 문제와 대응 과정은 [Apple 로그인 마이그레이션](/projects/cherry-world/apple-login-migration)에 정리했다.
+앱 이전 이후 발생한 로그인 식별정보 문제와 대응 과정은 [Apple 로그인 마이그레이션](/projects/cherry-world/apple-login-migration)에 정리했습니다.
 
 ## 역할 분담과 관련 문서 {/* #프로젝트-간-경계 */}
 
-iOS 앱 개발과 두 플랫폼의 광고 연계를 담당했다. Android의 기본 앱 기능과 공통 백엔드는 각 담당자와 협업했다.
+iOS 앱 개발과 두 플랫폼의 광고 연계를 담당했습니다. Android의 기본 앱 기능과 공통 백엔드는 각 담당자와 협업했습니다.
 
-서비스의 출발점은 [C\*erry Walk 배경](/projects/cherry/cherry-work-origin), 같은 회사 재직 중 수행한 [C\*erry Run DB 개선](/projects/cherry/postgresql-query-plan)과 [팀 공통 정기 배포](/projects/cherry/release-branch-management)는 C\*erry 문서에서 다룬다.
+서비스의 출발점은 [C\*erry Walk 배경](/projects/cherry/cherry-work-origin), 같은 회사 재직 중 수행한 [C\*erry Run DB 개선](/projects/cherry/postgresql-query-plan)과 [팀 공통 정기 배포](/projects/cherry/release-branch-management)는 C\*erry 문서에서 다룹니다.

@@ -162,6 +162,29 @@
   font-size: 1.5rem;
 }
 
+.projectCard {
+  padding: 0;
+  overflow: hidden;
+}
+
+.cardThumbnail {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: var(--ifm-color-emphasis-100);
+}
+
+.cardContent {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.75rem;
+}
+
 .cardPeriod {
   margin: -0.35rem 0 0.8rem;
   color: var(--ifm-color-emphasis-500);

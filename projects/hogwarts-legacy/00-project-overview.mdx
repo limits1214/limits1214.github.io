@@ -21,7 +21,7 @@ tags:
 
 ## 어떤 프로젝트인가
 
-《호그와트 레거시》를 C++20·DirectX 11 기반 자체 엔진으로 구현한 7인 팀의 3D 액션 RPG 모작이다. 월드 탐험, 주문 전투, 보스전, 빗자루 비행과 물리 기반 미니게임을 하나의 클라이언트에 통합했다.
+《호그와트 레거시》를 C++20·DirectX 11 기반 자체 엔진으로 구현한 7인 팀의 3D 액션 RPG 모작입니다. 월드 탐험, 주문 전투, 보스전, 빗자루 비행과 물리 기반 미니게임을 하나의 클라이언트에 통합했습니다.
 
 | 항목 | 내용 |
 | --- | --- |
@@ -31,13 +31,13 @@ tags:
 | 기반 기술 | C++20 · HLSL · DirectX 11 |
 | 담당 역할 | 팀장 · Framework / Physics |
 
-게임 로직과 엔진 기능을 구현한 모작 프로젝트다. 모델·텍스처·음원은 원작 리소스를 사용했다.
+게임 로직과 엔진 기능을 구현한 모작 프로젝트입니다. 모델·텍스처·음원은 원작 리소스를 사용했습니다.
 
 ## 내가 맡은 문제
 
-주된 과제는 여러 담당자의 기능이 같은 객체·리소스·프레임 흐름 안에서 동작하도록 기반을 마련하는 것이었다. 객체가 제거된 뒤의 참조, 물리와 애니메이션의 갱신 시점, 레벨을 전환할 때 남은 이펙트와 사운드처럼 개별 기능 사이의 경계에서 발생하는 문제를 다뤘다.
+주된 과제는 여러 담당자의 기능이 같은 객체·리소스·프레임 흐름 안에서 동작하도록 기반을 마련하는 것이었습니다. 객체가 제거된 뒤의 참조, 물리와 애니메이션의 갱신 시점, 레벨을 전환할 때 남은 이펙트와 사운드처럼 개별 기능 사이의 경계에서 발생하는 문제를 다뤘습니다.
 
-공용 API를 제공하는 데서 끝내지 않고, 망토·랙돌·물리 문·Prop·Summoner’s Court와 주문 연출에 적용하면서 실제 사용 조건을 확인하고 보강했다.
+공용 API를 제공하는 데서 끝내지 않고, 망토·랙돌·물리 문·Prop·Summoner’s Court와 주문 연출에 적용하면서 실제 사용 조건을 확인하고 보강했습니다.
 
 | 영역 | 직접 구현·보강한 범위 | 팀 작업과의 경계 |
 | --- | --- | --- |
@@ -48,11 +48,11 @@ tags:
 | 진단·개발 도구 | Tracy 도입, 디버그 GUI·형상 표시, 물리 배치·랙돌 도구, 빌드 호환성 검사 | 공통 진단 도구에 각 파트의 표시 기능 연결 |
 | 팀 운영 | 기능 브랜치·통합, 공용 인터페이스 조정, 코드와 리소스 실행 환경 정리 | 파트별 변경 사항을 공유하고 통합 상태 점검 |
 
-월드 스트리밍·Map Editor, 플레이어 전투·애니메이션, 몬스터 AI, Renderer·조명, Particle, UI는 각 담당자가 주도했다. 공통 엔진과 이들 시스템의 연동을 맡았다.
+월드 스트리밍·Map Editor, 플레이어 전투·애니메이션, 몬스터 AI, Renderer·조명, Particle, UI는 각 담당자가 주도했습니다. 공통 엔진과 이들 시스템의 연동을 맡았습니다.
 
 ## 전체 구조에서의 위치
 
-아래는 클래스 상속도가 아니라 책임과 의존 방향을 요약한 구조다. 공용 기능은 Engine DLL에, 게임별 정책과 레벨 구성은 Client에 두었다.
+아래는 클래스 상속도가 아니라 책임과 의존 방향을 요약한 구조입니다. 공용 기능은 Engine DLL에, 게임별 정책과 레벨 구성은 Client에 두었습니다.
 
 ```text
 Client — 게임별 규칙과 콘텐츠
@@ -70,11 +70,11 @@ DirectX 11 / PhysX / NvCloth / FMOD 등
   Tracy·디버그 표시 ← 실행 중 상태와 계측 결과
 ```
 
-이 경계 덕분에 Client에서는 구체적인 게임 동작을 작성하고, 반복되는 객체 관리·물리 생성·리소스 처리는 엔진 API를 사용할 수 있었다. 반대로 공용 API의 변경은 여러 파트에 영향을 주므로, 호출 시점과 소유권·종료 규칙까지 함께 정리해야 했다.
+이 경계 덕분에 Client에서는 구체적인 게임 동작을 작성하고, 반복되는 객체 관리·물리 생성·리소스 처리는 엔진 API를 사용할 수 있었습니다. 반대로 공용 API의 변경은 여러 파트에 영향을 주므로, 호출 시점과 소유권·종료 규칙까지 함께 정리해야 했습니다.
 
 ## 먼저 읽을 다섯 가지 사례
 
-기반 설계에서 실제 콘텐츠 적용까지 이어지는 순서로 대표 사례를 골랐다. 아래 다섯 문서를 먼저 읽고 관심 영역을 더 살펴볼 수 있다.
+기반 설계에서 실제 콘텐츠 적용까지 이어지는 순서로 대표 사례를 골랐습니다. 아래 다섯 문서를 먼저 읽고 관심 영역을 더 살펴볼 수 있습니다.
 
 1. [Generation Handle 기반 Object Manager](/projects/hogwarts-legacy/handle-object-manager) — 삭제와 슬롯 재사용 이후 외부 참조를 검증하고, 실제 파괴 시점을 FrameEnd로 모은 구조.
 2. [PhysX 충돌 필터와 Query 파이프라인](/projects/hogwarts-legacy/physx-collision-query) — 충돌 여부뿐 아니라 상대 Shape와 Handle을 게임 로직에 전달하는 공용 기반.
@@ -86,26 +86,26 @@ DirectX 11 / PhysX / NvCloth / FMOD 등
 
 ### 엔진 기반과 팀 개발 환경
 
-[프로젝트 운영과 리소스 파이프라인](/projects/hogwarts-legacy/project-workflow), [vcpkg·서드파티 관리](/projects/hogwarts-legacy/dependency-management)에서 작업 환경을 설명한다. [Frame Loop](/projects/hogwarts-legacy/frame-loop), [Worker](/projects/hogwarts-legacy/worker-system), [Resource Manager](/projects/hogwarts-legacy/resource-manager)는 실행과 데이터 흐름을 다룬다.
+[프로젝트 운영과 리소스 파이프라인](/projects/hogwarts-legacy/project-workflow), [vcpkg·서드파티 관리](/projects/hogwarts-legacy/dependency-management)에서 작업 환경을 설명합니다. [Frame Loop](/projects/hogwarts-legacy/frame-loop), [Worker](/projects/hogwarts-legacy/worker-system), [Resource Manager](/projects/hogwarts-legacy/resource-manager)는 실행과 데이터 흐름을 다룹니다.
 
-객체 재사용과 종료 경계는 [Object Pool](/projects/hogwarts-legacy/handle-object-pool), [레벨 전환과 수명주기](/projects/hogwarts-legacy/level-transition-lifecycle)에 정리했다. StringID·타입 시스템·직렬화 등 나머지 기반 문서는 프로젝트의 Engine Foundation 목록에서 볼 수 있다.
+객체 재사용과 종료 경계는 [Object Pool](/projects/hogwarts-legacy/handle-object-pool), [레벨 전환과 수명주기](/projects/hogwarts-legacy/level-transition-lifecycle)에 정리했습니다. StringID·타입 시스템·직렬화 등 나머지 기반 문서는 프로젝트의 Engine Foundation 목록에서 볼 수 있습니다.
 
 ### 물리 상호작용과 제작 도구
 
-[D6 물리 문](/projects/hogwarts-legacy/d6-physics-door), [물리 Debris 전환](/projects/hogwarts-legacy/physics-debris-transition), [Magic Square Step](/projects/hogwarts-legacy/magic-square-step), [Accio·고대마법 투척](/projects/hogwarts-legacy/accio-ancient-throw-control)은 공용 물리를 게임 규칙에 맞게 사용하는 사례다.
+[D6 물리 문](/projects/hogwarts-legacy/d6-physics-door), [물리 Debris 전환](/projects/hogwarts-legacy/physics-debris-transition), [Magic Square Step](/projects/hogwarts-legacy/magic-square-step), [Accio·고대마법 투척](/projects/hogwarts-legacy/accio-ancient-throw-control)은 공용 물리를 게임 규칙에 맞게 사용하는 사례입니다.
 
-맵의 충돌 형상을 코드 수정 없이 배치하는 과정은 [충돌 배치 에디터](/projects/hogwarts-legacy/collision-proxy-editor), 형상을 화면에 표시하는 공통 기반은 [디버그 시각화 렌더러](/projects/hogwarts-legacy/debug-geometry-renderer)에서 설명한다.
+맵의 충돌 형상을 코드 수정 없이 배치하는 과정은 [충돌 배치 에디터](/projects/hogwarts-legacy/collision-proxy-editor), 형상을 화면에 표시하는 공통 기반은 [디버그 시각화 렌더러](/projects/hogwarts-legacy/debug-geometry-renderer)에서 설명합니다.
 
 ### 연출과 안정성
 
-[주문 이펙트](/projects/hogwarts-legacy/spell-effects)는 세 주문의 Cast·발사·충돌·잔류와 공통 엔진 보강을 한 문서로 묶었다. [사운드 수명과 Fade](/projects/hogwarts-legacy/sound-lifecycle)는 시각 연출과 별개로 남아야 하는 재생 수명을 다룬다.
+[주문 이펙트](/projects/hogwarts-legacy/spell-effects)는 세 주문의 Cast·발사·충돌·잔류와 공통 엔진 보강을 한 문서로 묶었습니다. [사운드 수명과 Fade](/projects/hogwarts-legacy/sound-lifecycle)는 시각 연출과 별개로 남아야 하는 재생 수명을 다룹니다.
 
-[Tracy 계측](/projects/hogwarts-legacy/tracy-profiling), [Shader Hot Reload](/projects/hogwarts-legacy/shader-hot-reload), [Engine DLL 호환성 검사](/projects/hogwarts-legacy/engine-build-compatibility)는 문제를 관찰하고 반복 확인하는 개발 환경에 해당한다.
+[Tracy 계측](/projects/hogwarts-legacy/tracy-profiling), [Shader Hot Reload](/projects/hogwarts-legacy/shader-hot-reload), [Engine DLL 호환성 검사](/projects/hogwarts-legacy/engine-build-compatibility)는 문제를 관찰하고 반복 확인하는 개발 환경에 해당합니다.
 
 ## 구현 결과 {/* #구현-결과를-설명하는-기준 */}
 
-PhysX의 Solver는 라이브러리를 사용하고, 엔진 객체와 물리 Actor의 수명·식별·동기화를 직접 연결했다. 이처럼 공용 API를 통해 각 파트가 같은 객체와 실행 흐름을 사용하도록 구성했다.
+PhysX의 Solver는 라이브러리를 사용하고, 엔진 객체와 물리 Actor의 수명·식별·동기화를 직접 연결했습니다. 이처럼 공용 API를 통해 각 파트가 같은 객체와 실행 흐름을 사용하도록 구성했습니다.
 
 ## 회고
 
-공용 기반의 완성도는 API 개수만으로 판단할 수 없었다. 콘텐츠에서 실제 사용하면서 생성 시점, 갱신 순서, 삭제 이후 참조와 비동기 종료처럼 처음에는 드러나지 않았던 조건을 정리해야 했다. 물리와 연출을 직접 연결한 경험은 엔진 API를 사용하는 쪽의 요구를 확인하는 데 도움이 됐다.
+공용 기반의 완성도는 API 개수만으로 판단할 수 없었습니다. 콘텐츠에서 실제 사용하면서 생성 시점, 갱신 순서, 삭제 이후 참조와 비동기 종료처럼 처음에는 드러나지 않았던 조건을 정리해야 했습니다. 물리와 연출을 직접 연결한 경험은 엔진 API를 사용하는 쪽의 요구를 확인하는 데 도움이 됐습니다.

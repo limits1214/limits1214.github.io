@@ -17,9 +17,9 @@ tags:
 
 ## 웹에서 접속해 게임에 들어가기까지
 
-게임 규칙과 렌더링 외에도 브라우저 접속, 사용자 식별, 토큰 갱신, 실시간 연결, 실행 파일 배포가 필요했다. Rust workspace에서 HTTP API와 WebSocket 서버를 나누고, 인증·DB 접근·공통 DTO를 `common`에 모아 사용했다.
+게임 규칙과 렌더링 외에도 브라우저 접속, 사용자 식별, 토큰 갱신, 실시간 연결, 실행 파일 배포가 필요했습니다. Rust workspace에서 HTTP API와 WebSocket 서버를 나누고, 인증·DB 접근·공통 DTO를 `common`에 모아 사용했습니다.
 
-일반 화면에서는 닉네임을 입력하는 게스트 로그인을 사용한다. 서버에는 이메일·Google OAuth 로그인도 구현했다.
+일반 화면에서는 닉네임을 입력하는 게스트 로그인을 사용합니다. 서버에는 이메일·Google OAuth 로그인도 구현했습니다.
 
 ## API·실시간 게임·공통 코어의 역할
 
@@ -31,13 +31,13 @@ tags:
 | `tetris-lib` | 서버와 WASM 웹이 공유하는 보드 규칙 |
 | `front` | React 화면, 사용자 인증 상태, WASM 게임과 WebSocket 송수신 |
 
-API는 4000, WebSocket 서버는 4001 포트로 구성한다. 별도 실행 파일이므로 각 프로세스가 공통 코드를 링크하고 자신의 연결 풀을 생성한다. `common`이라는 crate를 공유한다고 런타임 메모리나 연결 풀 하나를 두 프로세스가 공유하는 것은 아니다.
+API는 4000, WebSocket 서버는 4001 포트로 구성합니다. 별도 실행 파일이므로 각 프로세스가 공통 코드를 링크하고 자신의 연결 풀을 생성합니다. `common`이라는 crate를 공유한다고 런타임 메모리나 연결 풀 하나를 두 프로세스가 공유하는 것은 아닙니다.
 
-PostgreSQL에는 사용자·세션과 종료 게임 백업을 저장한다. 진행 중인 방과 게임 상태는 WebSocket 서버의 인메모리 world에 있다. HTTP 처리와 실시간 게임 처리의 책임을 나눈 것이며, 여러 WebSocket 서버가 하나의 world를 공유하는 분산 구성은 아니다.
+PostgreSQL에는 사용자·세션과 종료 게임 백업을 저장합니다. 진행 중인 방과 게임 상태는 WebSocket 서버의 인메모리 world에 있습니다. HTTP 처리와 실시간 게임 처리의 책임을 나눈 것이며, 여러 WebSocket 서버가 하나의 world를 공유하는 분산 구성은 아닙니다.
 
 ## 게스트 로그인과 DB 세션 등록
 
-게스트 로그인 요청은 닉네임 검증 후 DB 트랜잭션 안에서 사용자와 세션을 생성한다. 사용자 ID를 만들고 access token과 refresh token을 발급하며, refresh token의 `jti`를 세션 ID로 사용한다. 세션에는 사용자 ID·User-Agent·IP·만료 시간을 기록한다.
+게스트 로그인 요청은 닉네임 검증 후 DB 트랜잭션 안에서 사용자와 세션을 생성합니다. 사용자 ID를 만들고 access token과 refresh token을 발급하며, refresh token의 `jti`를 세션 ID로 사용합니다. 세션에는 사용자 ID·User-Agent·IP·만료 시간을 기록합니다.
 
 ```text
 닉네임 입력
@@ -48,77 +48,77 @@ PostgreSQL에는 사용자·세션과 종료 게임 백업을 저장한다. 진�
   → WebSocket userLogin 전송
 ```
 
-현재 게스트 경로는 두 토큰을 JSON 응답으로 전달한다. 프런트엔드의 Zustand persist store는 사용자 정보와 두 토큰을 저장 대상으로 지정한다. 쿠키만으로 인증 상태를 유지하는 방식과 구분하며, JavaScript에서 접근 가능한 토큰 저장이라는 보안 경계를 가진다.
+현재 게스트 경로는 두 토큰을 JSON 응답으로 전달합니다. 프런트엔드의 Zustand persist store는 사용자 정보와 두 토큰을 저장 대상으로 지정합니다. 쿠키만으로 인증 상태를 유지하는 방식과 구분하며, JavaScript에서 접근 가능한 토큰 저장이라는 보안 경계를 가집니다.
 
-`HomePage`는 토큰 저장 뒤 사용자 정보를 조회하고, access token을 담은 `userLogin` 메시지를 WebSocket에 보낸다. HTTP 로그인 성공과 실시간 연결의 사용자 인증을 명시적으로 연결한 부분이다.
+`HomePage`는 토큰 저장 뒤 사용자 정보를 조회하고, access token을 담은 `userLogin` 메시지를 WebSocket에 보냅니다. HTTP 로그인 성공과 실시간 연결의 사용자 인증을 명시적으로 연결한 부분입니다.
 
 ## access token과 refresh token의 역할
 
-JWT access claim에는 사용자 식별자인 `sub`, 발급 시각, 만료 시각을 담는다. refresh claim에는 세션을 식별하는 `jti`가 추가된다. 두 종류의 토큰은 각각의 키 설정을 사용하고 검증은 `jsonwebtoken`에 위임한다. 실제 비밀키나 설정값은 문서에 포함하지 않는다.
+JWT access claim에는 사용자 식별자인 `sub`, 발급 시각, 만료 시각을 담습니다. refresh claim에는 세션을 식별하는 `jti`가 추가됩니다. 두 종류의 토큰은 각각의 키 설정을 사용하고 검증은 `jsonwebtoken`에 위임합니다. 실제 비밀키나 설정값은 문서에 포함하지 않습니다.
 
-HTTP 보호 경로는 `CheckAccessToken` 추출기를 통해 Authorization Bearer를 읽고 토큰을 검증한다. 선택형 추출기도 있어, 해당 구현에서는 인증 추출 실패를 `None`으로 바꾼다. 이 선택형 경로를 사용하는 핸들러는 미인증 상태의 허용 범위를 별도로 결정해야 한다.
+HTTP 보호 경로는 `CheckAccessToken` 추출기를 통해 Authorization Bearer를 읽고 토큰을 검증합니다. 선택형 추출기도 있어, 해당 구현에서는 인증 추출 실패를 `None`으로 바꿉니다. 이 선택형 경로를 사용하는 핸들러는 미인증 상태의 허용 범위를 별도로 결정해야 합니다.
 
-클라이언트의 `beforeTokenCheckAndRefresh()`는 저장된 access token의 만료 여부를 보고 필요할 때 refresh token을 Bearer로 전송한다. 서버는 refresh token을 검증한 뒤 `jti`에 대응하는 삭제되지 않은 DB 세션이 있는지 확인하고 새 access token을 발급한다.
+클라이언트의 `beforeTokenCheckAndRefresh()`는 저장된 access token의 만료 여부를 보고 필요할 때 refresh token을 Bearer로 전송합니다. 서버는 refresh token을 검증한 뒤 `jti`에 대응하는 삭제되지 않은 DB 세션이 있는지 확인하고 새 access token을 발급합니다.
 
-갱신 시에는 access token만 재발급한다. refresh token 회전·재사용 탐지·동시 갱신 요청 병합은 구현하지 않았다. 클라이언트 만료 확인과 별개로 서버에서 토큰을 검증한다.
+갱신 시에는 access token만 재발급합니다. refresh token 회전·재사용 탐지·동시 갱신 요청 병합은 구현하지 않았습니다. 클라이언트 만료 확인과 별개로 서버에서 토큰을 검증합니다.
 
-## WebSocket 연결 허가와 사용자 인증을 나눈다
+## WebSocket 연결 허가와 사용자 인증을 나눕니다
 
-클라이언트는 `/api/auth/wstoken`에서 연결용 토큰을 받아 WebSocket URL의 쿼리에 넣는다. 서버 upgrade 핸들러는 토큰을 디코딩한 후 연결을 연다. 연결이 열리면 프런트엔드는 저장된 사용자 access token을 확인하고 `userLogin` 메시지를 보낸다.
+클라이언트는 `/api/auth/wstoken`에서 연결용 토큰을 받아 WebSocket URL의 쿼리에 넣습니다. 서버 upgrade 핸들러는 토큰을 디코딩한 후 연결을 엽니다. 연결이 열리면 프런트엔드는 저장된 사용자 access token을 확인하고 `userLogin` 메시지를 보냅니다.
 
-`userLogin` 수신에서는 사용자 토큰을 검증하고 DB에서 `sub`에 해당하는 사용자를 조회한다. 이후 world 명령으로 연결의 인증 상태를 갱신하고 사용자 ID·닉네임·연결 ID를 등록한다. 로비 입장과 게임 참여 가드는 이 연결의 인증 상태를 사용한다.
+`userLogin` 수신에서는 사용자 토큰을 검증하고 DB에서 `sub`에 해당하는 사용자를 조회합니다. 이후 world 명령으로 연결의 인증 상태를 갱신하고 사용자 ID·닉네임·연결 ID를 등록합니다. 로비 입장과 게임 참여 가드는 이 연결의 인증 상태를 사용합니다.
 
-현재 연결용 토큰은 공개 API에서 일반 access token 생성 함수를 재사용해 발급한다. upgrade 단계도 전용 용도나 일회 사용 여부를 별도로 검사하지 않는다. 따라서 소켓 연결 단계에서 로그인 여부나 티켓의 재사용을 제한하지는 않는다. 사용자 인증은 뒤의 `userLogin` 단계와 구분해야 한다.
+현재 연결용 토큰은 공개 API에서 일반 access token 생성 함수를 재사용해 발급합니다. upgrade 단계도 전용 용도나 일회 사용 여부를 별도로 검사하지 않습니다. 따라서 소켓 연결 단계에서 로그인 여부나 티켓의 재사용을 제한하지는 않습니다. 사용자 인증은 뒤의 `userLogin` 단계와 구분해야 합니다.
 
-연결 끊김에는 재연결 시도와 지수형 대기 시간이 설정되어 있지만, 소켓 재연결과 이전 게임의 완전한 복원은 다른 문제다. 보드 스냅샷·방 퇴장·진행 상태의 한계는 앞선 네트워크 문서에서 다룬다.
+연결 끊김에는 재연결 시도와 지수형 대기 시간이 설정되어 있지만, 소켓 재연결과 이전 게임의 완전한 복원은 다른 문제입니다. 보드 스냅샷·방 퇴장·진행 상태의 한계는 앞선 네트워크 문서에서 다룹니다.
 
 ## 이메일·OAuth·로그아웃에서 남아 있는 차이
 
-서버에는 이메일 가입·로그인과 Google OAuth의 인증 코드 교환·사용자 정보 조회·가입 또는 로그인 처리도 있다. 이메일 암호는 Argon2 해시·검증 함수를 사용한다. 다만 일반 프런트엔드의 이메일 API 함수는 TODO이며, 관련 호출 화면은 테스트 경로에서 확인된다.
+서버에는 이메일 가입·로그인과 Google OAuth의 인증 코드 교환·사용자 정보 조회·가입 또는 로그인 처리도 있습니다. 이메일 암호는 Argon2 해시·검증 함수를 사용합니다. 다만 일반 프런트엔드의 이메일 API 함수는 TODO이며, 관련 호출 화면은 테스트 경로에서 확인됩니다.
 
-이메일·Google 응답은 refresh token을 쿠키로 전달하는 코드가 남아 있다. 반면 현재 토큰 갱신 API는 Bearer refresh token을 요구하고 일반 게스트 흐름은 두 토큰을 store에 저장한다. 게스트 경로를 바꾸었다고 모든 인증 수단의 계약까지 함께 통일된 것은 아니다.
+이메일·Google 응답은 refresh token을 쿠키로 전달하는 코드가 남아 있습니다. 반면 현재 토큰 갱신 API는 Bearer refresh token을 요구하고 일반 게스트 흐름은 두 토큰을 store에 저장합니다. 게스트 경로를 바꾸었다고 모든 인증 수단의 계약까지 함께 통일된 것은 아닙니다.
 
-일반 화면의 로그아웃은 서버 로그아웃 요청, 로컬 인증 store 비우기, WebSocket `userLogout` 순으로 진행한다. 현재 HTTP 로그아웃은 refresh 쿠키를 만료시키지만 DB 세션을 폐기하지 않는다. 로컬에서 토큰을 지웠다고 서버에서 해당 refresh token을 무효화한 것은 아니다. 세션 저장과 세션 취소를 별도 계약으로 정리해야 한다.
+일반 화면의 로그아웃은 서버 로그아웃 요청, 로컬 인증 store 비우기, WebSocket `userLogout` 순으로 진행합니다. 현재 HTTP 로그아웃은 refresh 쿠키를 만료시키지만 DB 세션을 폐기하지 않습니다. 로컬에서 토큰을 지웠다고 서버에서 해당 refresh token을 무효화한 것은 아닙니다. 세션 저장과 세션 취소를 별도 계약으로 정리해야 합니다.
 
-## Redis 준비와 실제 메시지 경로는 다르다
+## Redis 준비와 실제 메시지 경로는 다릅니다
 
-공통 app state에는 Redis client·pool이 있고 Compose에도 Redis 서비스가 있다. WebSocket 유틸리티에는 publish·분산 락 함수와 락 테스트가 존재한다.
+공통 app state에는 Redis client·pool이 있고 Compose에도 Redis 서비스가 있습니다. WebSocket 유틸리티에는 publish·분산 락 함수와 락 테스트가 존재합니다.
 
-게임의 `WsPubSub`는 프로세스 안의 `HashMap`과 Tokio broadcast channel로 토픽을 관리한다. Redis는 연결 기반을 구성했으며, 로비·게임 메시지는 프로세스 내부에서 전달한다.
+게임의 `WsPubSub`는 프로세스 안의 `HashMap`과 Tokio broadcast channel로 토픽을 관리합니다. Redis는 연결 기반을 구성했으며, 로비·게임 메시지는 프로세스 내부에서 전달합니다.
 
-현재 구조에서 WebSocket 서버를 여러 개로 늘리는 문제는 방 소유권·사용자 라우팅·서버 간 메시지 공유를 추가로 설계해야 하는 영역이다.
+현재 구조에서 WebSocket 서버를 여러 개로 늘리는 문제는 방 소유권·사용자 라우팅·서버 간 메시지 공유를 추가로 설계해야 하는 영역입니다.
 
 ## 컨테이너 실행 구성
 
-Compose는 웹·API·WebSocket 애플리케이션 묶음과 Nginx·PostgreSQL·Redis 인프라 묶음을 나누고 공유 네트워크로 연결한다. 운영용 Nginx 설정은 HTTPS를 받고 `/`를 웹 컨테이너, `/api`를 API, `/ws`를 WebSocket 컨테이너로 전달한다. WebSocket 경로에는 Upgrade·Connection 헤더 전달도 설정했다.
+Compose는 웹·API·WebSocket 애플리케이션 묶음과 Nginx·PostgreSQL·Redis 인프라 묶음을 나누고 공유 네트워크로 연결합니다. 운영용 Nginx 설정은 HTTPS를 받고 `/`를 웹 컨테이너, `/api`를 API, `/ws`를 WebSocket 컨테이너로 전달합니다. WebSocket 경로에는 Upgrade·Connection 헤더 전달도 설정했습니다.
 
-웹 Dockerfile은 Node 빌드 단계에서 `npm ci`와 웹 빌드를 수행한 뒤 정적 결과만 Nginx 실행 이미지로 옮긴다. 웹 컨테이너의 `try_files`는 직접 접근한 SPA 경로를 `index.html`로 연결하고 gzip을 설정한다.
+웹 Dockerfile은 Node 빌드 단계에서 `npm ci`와 웹 빌드를 수행한 뒤 정적 결과만 Nginx 실행 이미지로 옮깁니다. 웹 컨테이너의 `try_files`는 직접 접근한 SPA 경로를 `index.html`로 연결하고 gzip을 설정합니다.
 
-API와 WebSocket Dockerfile은 Rust 빌드 단계에서 `aarch64-unknown-linux-musl` 대상으로 각각의 실행 파일을 만든 뒤 Alpine 실행 이미지에 복사한다. 각 이미지에는 해당 애플리케이션의 `Settings.toml`도 복사한다. 설정 파일에 비밀값이 포함될 수 있는 구조인 만큼 이미지에 포함할 기본 설정과 배포 시 주입할 비밀 설정의 경계를 검토해야 한다.
+API와 WebSocket Dockerfile은 Rust 빌드 단계에서 `aarch64-unknown-linux-musl` 대상으로 각각의 실행 파일을 만든 뒤 Alpine 실행 이미지에 복사합니다. 각 이미지에는 해당 애플리케이션의 `Settings.toml`도 복사합니다. 설정 파일에 비밀값이 포함될 수 있는 구조인 만큼 이미지에 포함할 기본 설정과 배포 시 주입할 비밀 설정의 경계를 검토해야 합니다.
 
-이 설명은 저장소의 컨테이너·프록시 구성에 대한 분석이며, 현재 운영 서버나 TLS 인증서가 정상 가동 중인지 확인한 결과는 아니다.
+이 설명은 저장소의 컨테이너·프록시 구성에 대한 분석이며, 현재 운영 서버나 TLS 인증서가 정상 가동 중인지 확인한 결과는 아닙니다.
 
-## WASM을 먼저 만들고 웹과 서버 이미지를 게시한다
+## WASM을 먼저 만들고 웹과 서버 이미지를 게시합니다
 
-현재 활성 GitHub Actions 워크플로는 두 경로로 나뉘며 둘 다 `workflow_dispatch`로 수동 실행한다.
+현재 활성 GitHub Actions 워크플로는 두 경로로 나뉘며 둘 다 `workflow_dispatch`로 수동 실행합니다.
 
 | 경로 | 빌드·게시 순서 | 도착 지점 |
 | --- | --- | --- |
 | GitHub Pages | WASM 패키지 → 웹에 패키지 복사 → 웹 빌드 | 정적 사이트 게시 |
 | Docker 이미지 | WASM 패키지 → 웹 이미지 → API·WS 이미지 | GHCR 이미지 게시 |
 
-WASM 스크립트는 공용 코어와 TypeScript 타입을 패키징한다. 웹 빌드 스크립트는 결과를 로컬 `tetris-lib-pkg` 의존성 위치로 복사한다. 게임 규칙을 웹에서 실행하려면 웹 빌드 전에 코어 패키지가 필요하다는 의존 순서를 빌드 과정에 반영했다.
+WASM 스크립트는 공용 코어와 TypeScript 타입을 패키징합니다. 웹 빌드 스크립트는 결과를 로컬 `tetris-lib-pkg` 의존성 위치로 복사합니다. 게임 규칙을 웹에서 실행하려면 웹 빌드 전에 코어 패키지가 필요하다는 의존 순서를 빌드 과정에 반영했습니다.
 
-Pages 스크립트는 `build/index.html`을 `build/404.html`로 복사해 직접 경로 접근을 처리하고, Actions에서 `front/build`를 게시한다. 이 경로는 웹 파일만 배포하므로 멀티플레이를 하려면 별도 API·WebSocket 서버가 필요하다.
+Pages 스크립트는 `build/index.html`을 `build/404.html`로 복사해 직접 경로 접근을 처리하고, Actions에서 `front/build`를 게시합니다. 이 경로는 웹 파일만 배포하므로 멀티플레이를 하려면 별도 API·WebSocket 서버가 필요합니다.
 
-Docker 워크플로는 ARM runner에서 실행하며 GHCR에 로그인한 뒤 세 이미지를 `latest` 태그로 게시한다. 현재 활성 워크플로에는 게시된 이미지를 운영 호스트에서 pull하고 서비스를 교체하는 단계가 없다. 운영 서버 반영은 별도 절차가 필요하다.
+Docker 워크플로는 ARM runner에서 실행하며 GHCR에 로그인한 뒤 세 이미지를 `latest` 태그로 게시합니다. 현재 활성 워크플로에는 게시된 이미지를 운영 호스트에서 pull하고 서비스를 교체하는 단계가 없습니다. 운영 서버 반영은 별도 절차가 필요합니다.
 
 ## 다른 출처의 웹과 API 연결
 
-GitHub Pages에서 별도의 API를 호출할 수 있도록 API CORS 허용 목록에 Pages origin을 추가했다. Authorization·Content-Type 헤더, 사용하는 HTTP 메서드, credentials 설정을 함께 지정한다. CORS를 추가하는 것은 브라우저의 출처 정책에 맞추는 일이며 사용자 인증 자체는 JWT 경로에서 처리한다.
+GitHub Pages에서 별도의 API를 호출할 수 있도록 API CORS 허용 목록에 Pages origin을 추가했습니다. Authorization·Content-Type 헤더, 사용하는 HTTP 메서드, credentials 설정을 함께 지정합니다. CORS를 추가하는 것은 브라우저의 출처 정책에 맞추는 일이며 사용자 인증 자체는 JWT 경로에서 처리합니다.
 
-웹의 API 주소는 Vite 환경변수로 선택한다. 빌드된 정적 사이트의 요청 주소와 API 허용 origin, Nginx 라우팅이 맞아야 웹 파일이 열리는 것뿐 아니라 로그인·게임 연결까지 동작한다. 배포 결과를 확인할 때 각각을 구분할 필요가 있다.
+웹의 API 주소는 Vite 환경변수로 선택합니다. 빌드된 정적 사이트의 요청 주소와 API 허용 origin, Nginx 라우팅이 맞아야 웹 파일이 열리는 것뿐 아니라 로그인·게임 연결까지 동작합니다. 배포 결과를 확인할 때 각각을 구분할 필요가 있습니다.
 
 ## 구현 결과 {/* #성과와-보강할-운영-경계 */}
 
-HTTP 사용자 식별과 실시간 게임 연결을 분리하고 공통 인증·저장소 코드를 재사용했다. WASM 선행 빌드, 정적 웹 게시, 웹·API·WebSocket 이미지 생성을 연결해 브라우저에서 접속하는 게임의 배포 경로를 마련했다.
+HTTP 사용자 식별과 실시간 게임 연결을 분리하고 공통 인증·저장소 코드를 재사용했습니다. WASM 선행 빌드, 정적 웹 게시, 웹·API·WebSocket 이미지 생성을 연결해 브라우저에서 접속하는 게임의 배포 경로를 마련했습니다.

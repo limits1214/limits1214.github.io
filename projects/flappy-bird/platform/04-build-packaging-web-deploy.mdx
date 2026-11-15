@@ -19,13 +19,13 @@ tags:
 
 ## 공통 게임 코드를 각 플랫폼의 실행 형식으로 전달
 
-FlappyBird는 게임 로직을 공유하는 것에서 더 나아가, 각 플랫폼이 실행할 수 있는 라이브러리 형식과 리소스 배치를 구성했다. Rust 코드를 컴파일하는 단계와 Android Studio·Xcode·브라우저가 결과물을 사용하는 단계를 연결한 작업이다.
+FlappyBird는 게임 로직을 공유하는 것에서 더 나아가, 각 플랫폼이 실행할 수 있는 라이브러리 형식과 리소스 배치를 구성했습니다. Rust 코드를 컴파일하는 단계와 Android Studio·Xcode·브라우저가 결과물을 사용하는 단계를 연결한 작업입니다.
 
-**Android는 공유 라이브러리와 에셋 복사, iOS는 Xcode와 Rust 정적 라이브러리 연결, Web은 WASM 생성과 GitHub Pages 배포**로 구분된다. 모바일 앱 서명과 스토어 업로드는 별도 작업이다.
+**Android는 공유 라이브러리와 에셋 복사, iOS는 Xcode와 Rust 정적 라이브러리 연결, Web은 WASM 생성과 GitHub Pages 배포**로 구분됩니다. 모바일 앱 서명과 스토어 업로드는 별도 작업입니다.
 
 ## Cargo workspace와 플랫폼 진입점
 
-루트 패키지 `bevy_flappy_bird`는 공통 `AppPlugin`을 제공하고, Cargo workspace에 `android`, `ios`, `web` 패키지를 둔다. 데스크톱은 루트의 `src/main.rs`에서 App을 실행한다.
+루트 패키지 `bevy_flappy_bird`는 공통 `AppPlugin`을 제공하고, Cargo workspace에 `android`, `ios`, `web` 패키지를 둡니다. 데스크톱은 루트의 `src/main.rs`에서 App을 실행합니다.
 
 | 대상 | 라이브러리 형식·출력 | 공통 게임 연결 |
 | --- | --- | --- |
@@ -34,13 +34,13 @@ FlappyBird는 게임 로직을 공유하는 것에서 더 나아가, 각 플랫�
 | iOS | staticlib, `libios.a` | Xcode 앱에 링크되는 Rust 진입점 |
 | Web | cdylib의 WASM 출력 | wasm-bindgen으로 공개한 start_app에서 AppPlugin 등록 |
 
-플랫폼 패키지는 공통 라이브러리를 경로 의존성으로 참조하며 `default-features = false`를 지정한다. 공통 패키지의 기본 기능인 Inspector를 플랫폼 빌드에 기본 포함하지 않으려는 구성이다.
+플랫폼 패키지는 공통 라이브러리를 경로 의존성으로 참조하며 `default-features = false`를 지정합니다. 공통 패키지의 기본 기능인 Inspector를 플랫폼 빌드에 기본 포함하지 않으려는 구성입니다.
 
-플랫폼마다 App 설정도 다르다. Android는 Vulkan 백엔드·전체 화면·MSAA Off를 지정하고, iOS는 전체 화면·MSAA Off를 사용한다. Web은 `#target` canvas, 부모 크기에 맞추기, 자산 메타데이터 검사 생략을 설정한다. 게임 규칙은 공통으로 유지하되 실행 환경 설정은 진입점에 둔 구조다.
+플랫폼마다 App 설정도 다릅니다. Android는 Vulkan 백엔드·전체 화면·MSAA Off를 지정하고, iOS는 전체 화면·MSAA Off를 사용합니다. Web은 `#target` canvas, 부모 크기에 맞추기, 자산 메타데이터 검사 생략을 설정합니다. 게임 규칙은 공통으로 유지하되 실행 환경 설정은 진입점에 둔 구조입니다.
 
 ## Android: ARM64 라이브러리와 리소스 전달
 
-`android/build_android.sh`는 Android 디렉터리에서 실행하는 상대 경로 기반 스크립트다. 핵심 명령은 다음과 같다.
+`android/build_android.sh`는 Android 디렉터리에서 실행하는 상대 경로 기반 스크립트입니다. 핵심 명령은 다음과 같습니다.
 
 ```bash
 cargo ndk -t arm64-v8a -o ./jniLibs build --release
@@ -48,19 +48,19 @@ cp -rf ../assets android_studio/app/src/main
 cp -rf jniLibs android_studio/app/src/main
 ```
 
-`cargo-ndk`로 ARM64용 Release 라이브러리를 만들고, 출력 디렉터리와 공통 에셋을 Android 앱의 `src/main` 아래에 복사한다. 이는 Rust 결과물을 Gradle 프로젝트가 패키징할 수 있는 위치로 전달하는 단계다. 현재 스크립트는 ARM64 한 종류만 만들며 x86_64 에뮬레이터나 다른 ABI 출력을 함께 생성하지 않는다.
+`cargo-ndk`로 ARM64용 Release 라이브러리를 만들고, 출력 디렉터리와 공통 에셋을 Android 앱의 `src/main` 아래에 복사합니다. 이는 Rust 결과물을 Gradle 프로젝트가 패키징할 수 있는 위치로 전달하는 단계입니다. 현재 스크립트는 ARM64 한 종류만 만들며 x86_64 에뮬레이터나 다른 ABI 출력을 함께 생성하지 않습니다.
 
-`android/build.rs`는 `c++_shared` 링크를 요청한다. cargo-ndk가 제공한 sysroot·출력 경로를 이용해 `libc++_shared.so`도 대상 ABI 디렉터리로 복사한다. Rust 공유 라이브러리만 옮기는 것이 아니라 필요한 C++ 런타임 파일을 함께 전달하도록 했다.
+`android/build.rs`는 `c++_shared` 링크를 요청합니다. cargo-ndk가 제공한 sysroot·출력 경로를 이용해 `libc++_shared.so`도 대상 ABI 디렉터리로 복사합니다. Rust 공유 라이브러리만 옮기는 것이 아니라 필요한 C++ 런타임 파일을 함께 전달하도록 했습니다.
 
-Android Studio 프로젝트에는 NativeActivity 기반 Kotlin 호스트와 JNI 함수가 있고, Gradle의 현재 설정은 minSdk 26, compileSdk·targetSdk 34다.
+Android Studio 프로젝트에는 NativeActivity 기반 Kotlin 호스트와 JNI 함수가 있고, Gradle의 현재 설정은 minSdk 26, compileSdk·targetSdk 34입니다.
 
-이 셸 스크립트에는 Gradle assemble/bundle 실행이나 앱 서명·설치 단계가 없다. CMake 설정도 별도로 존재하지만 제공된 CMakeLists는 `native-lib.cpp`를 빌드하는 구성이며 Cargo 빌드를 대신하지 않는다. Rust 수정분은 Cargo 빌드 스크립트를 따로 실행해 반영해야 한다.
+이 셸 스크립트에는 Gradle assemble/bundle 실행이나 앱 서명·설치 단계가 없습니다. CMake 설정도 별도로 존재하지만 제공된 CMakeLists는 `native-lib.cpp`를 빌드하는 구성이며 Cargo 빌드를 대신하지 않습니다. Rust 수정분은 Cargo 빌드 스크립트를 따로 실행해 반영해야 합니다.
 
 ## iOS: Xcode 빌드 설정을 Rust 타깃에 연결
 
-iOS에는 두 경로가 있다. `ios/build.ios.sh`는 실기기용 `aarch64-apple-ios` Release 정적 라이브러리를 만드는 짧은 스크립트다. Xcode와 연결되는 실제 프로젝트 쪽에는 `ios/xcode/build_rust_deps.sh`가 별도로 있다.
+iOS에는 두 경로가 있습니다. `ios/build.ios.sh`는 실기기용 `aarch64-apple-ios` Release 정적 라이브러리를 만드는 짧은 스크립트입니다. Xcode와 연결되는 실제 프로젝트 쪽에는 `ios/xcode/build_rust_deps.sh`가 별도로 있습니다.
 
-Xcode 프로젝트는 `cargo_ios` Legacy Target을 통해 Rust 빌드 스크립트를 호출한다. 스크립트는 Xcode가 전달한 `CONFIGURATION`, `ARCHS`, simulator 관련 변수를 읽어 Rust 옵션을 결정한다.
+Xcode 프로젝트는 `cargo_ios` Legacy Target을 통해 Rust 빌드 스크립트를 호출합니다. 스크립트는 Xcode가 전달한 `CONFIGURATION`, `ARCHS`, simulator 관련 변수를 읽어 Rust 옵션을 결정합니다.
 
 | Xcode 대상 | Rust target |
 | --- | --- |
@@ -68,17 +68,17 @@ Xcode 프로젝트는 `cargo_ios` Legacy Target을 통해 Rust 빌드 스크립�
 | ARM64 시뮬레이터 | aarch64-apple-ios-sim |
 | x86_64 시뮬레이터 | x86_64-apple-ios |
 
-Debug면 `--release`를 생략하고 그 외 구성에서는 Release 빌드를 요청한다. Xcode의 라이브러리 검색 경로도 Debug에서는 각 target의 `debug`, Release에서는 `release` 디렉터리를 참조한다. `-lios` 링크 옵션으로 Rust의 `libios.a`를 앱과 연결한다.
+Debug면 `--release`를 생략하고 그 외 구성에서는 Release 빌드를 요청합니다. Xcode의 라이브러리 검색 경로도 Debug에서는 각 target의 `debug`, Release에서는 `release` 디렉터리를 참조합니다. `-lios` 링크 옵션으로 Rust의 `libios.a`를 앱과 연결합니다.
 
-공통 `assets` 폴더는 Xcode Resources에 포함한다. Swift 소스와 bridging header는 앞 문서에서 설명한 저장·콜백 연결에 사용된다. Rust 라이브러리, 네이티브 호스트, 게임 에셋을 하나의 앱에서 만나게 하는 구성이다.
+공통 `assets` 폴더는 Xcode Resources에 포함합니다. Swift 소스와 bridging header는 앞 문서에서 설명한 저장·콜백 연결에 사용됩니다. Rust 라이브러리, 네이티브 호스트, 게임 에셋을 하나의 앱에서 만나게 하는 구성입니다.
 
-스크립트는 아키텍처별 Cargo 빌드를 수행하지만 결과를 `lipo`로 합치거나 XCFramework로 묶지는 않는다. 앱 아카이브·서명·배포는 Xcode 측의 별도 단계다.
+스크립트는 아키텍처별 Cargo 빌드를 수행하지만 결과를 `lipo`로 합치거나 XCFramework로 묶지는 않습니다. 앱 아카이브·서명·배포는 Xcode 측의 별도 단계입니다.
 
-iOS 빌드 스크립트는 Mozilla Glean 예제를 기반으로, 프로젝트의 타깃과 라이브러리 링크 경로에 맞춰 적용했다.
+iOS 빌드 스크립트는 Mozilla Glean 예제를 기반으로, 프로젝트의 타깃과 라이브러리 링크 경로에 맞춰 적용했습니다.
 
 ## Web: WASM을 브라우저 모듈로 변환
 
-`web/build_wasm.sh`는 먼저 `wasm32-unknown-unknown` 대상으로 Cargo 빌드를 수행한다. 현재 `flag`는 release다. 이후 wasm-bindgen CLI로 Cargo의 WASM 출력을 브라우저에서 import할 수 있는 JavaScript 바인딩과 WASM 파일로 변환한다.
+`web/build_wasm.sh`는 먼저 `wasm32-unknown-unknown` 대상으로 Cargo 빌드를 수행합니다. 현재 `flag`는 release입니다. 이후 wasm-bindgen CLI로 Cargo의 WASM 출력을 브라우저에서 import할 수 있는 JavaScript 바인딩과 WASM 파일로 변환합니다.
 
 ```bash
 wasm-bindgen --out-name web \
@@ -86,20 +86,20 @@ wasm-bindgen --out-name web \
   --target web ../target/wasm32-unknown-unknown/release/web.wasm
 ```
 
-위 명령은 Release 설정을 풀어 쓴 것이다. 결과는 `web/wasm` 아래에 생성된다. Web 패키지의 Bevy 설정에는 `webgl2`가 포함돼 있다.
+위 명령은 Release 설정을 풀어 쓴 것입니다. 결과는 `web/wasm` 아래에 생성됩니다. Web 패키지의 Bevy 설정에는 `webgl2`가 포함돼 있습니다.
 
-`web/index.html`은 `/flappy_bird/wasm/web.js`에서 초기화 함수와 `start_app`을 import한다. WASM 초기화가 완료된 뒤 App을 실행하고 `#target` canvas에 게임을 표시한다. 저장소 이름이 들어간 절대 URL이므로 다른 하위 경로나 도메인 루트로 옮길 때는 엔트리 경로를 함께 맞춰야 한다.
+`web/index.html`은 `/flappy_bird/wasm/web.js`에서 초기화 함수와 `start_app`을 import합니다. WASM 초기화가 완료된 뒤 App을 실행하고 `#target` canvas에 게임을 표시합니다. 저장소 이름이 들어간 절대 URL이므로 다른 하위 경로나 도메인 루트로 옮길 때는 엔트리 경로를 함께 맞춰야 합니다.
 
-WASM 생성 스크립트 실행 후 CI에서 공통 에셋을 추가로 복사한다.
+WASM 생성 스크립트 실행 후 CI에서 공통 에셋을 추가로 복사합니다.
 
 ## GitHub Actions에서 Pages까지 연결
 
-`.github/workflows/deploy.yml`은 master push를 트리거로 Ubuntu runner에서 실행한다.
+`.github/workflows/deploy.yml`은 master push를 트리거로 Ubuntu runner에서 실행합니다.
 
-1. 저장소를 checkout한다.
-2. wasm32 타깃과 `wasm-bindgen-cli 0.2.100`을 설치한다.
-3. web 디렉터리에서 `build_wasm.sh`를 실행한다.
-4. 공통 assets를 web 아래에 복사한다.
-5. Pages 배포 Action에 `publish_dir: ./web`을 전달한다.
+1. 저장소를 checkout합니다.
+2. wasm32 타깃과 `wasm-bindgen-cli 0.2.100`을 설치합니다.
+3. web 디렉터리에서 `build_wasm.sh`를 실행합니다.
+4. 공통 assets를 web 아래에 복사합니다.
+5. Pages 배포 Action에 `publish_dir: ./web`을 전달합니다.
 
-HTML·WASM·에셋을 같은 웹 루트 아래에 모아 정적 호스팅으로 전달하는 흐름이다. 게임 빌드 결과를 수동으로 웹 저장소에 옮기는 과정을 줄였다. 단, 이 workflow는 Web 배포용이며 Android·iOS 빌드 매트릭스나 자동 테스트를 포함하지 않는다.
+HTML·WASM·에셋을 같은 웹 루트 아래에 모아 정적 호스팅으로 전달하는 흐름입니다. 게임 빌드 결과를 수동으로 웹 저장소에 옮기는 과정을 줄였습니다. 단, 이 workflow는 Web 배포용이며 Android·iOS 빌드 매트릭스나 자동 테스트를 포함하지 않습니다.

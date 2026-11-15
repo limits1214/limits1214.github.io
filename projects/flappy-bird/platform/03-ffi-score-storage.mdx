@@ -19,13 +19,13 @@ tags:
 
 ## 같은 게임 로직에서 서로 다른 플랫폼 기능 호출
 
-FlappyBird는 공통 Rust 게임 로직을 데스크톱·Android·iOS·Web 진입점에서 사용한다. 각 진입점은 창과 렌더링 설정을 구성한 뒤 같은 `AppPlugin`을 등록한다. 최고 점수 저장처럼 플랫폼 기능이 필요한 부분은 공통 게임 로직 안에 운영체제 분기를 흩어 놓지 않고 FFI 모듈로 모았다.
+FlappyBird는 공통 Rust 게임 로직을 데스크톱·Android·iOS·Web 진입점에서 사용합니다. 각 진입점은 창과 렌더링 설정을 구성한 뒤 같은 `AppPlugin`을 등록합니다. 최고 점수 저장처럼 플랫폼 기능이 필요한 부분은 공통 게임 로직 안에 운영체제 분기를 흩어 놓지 않고 FFI 모듈로 모았습니다.
 
-게임 코드의 저장 API를 유지하면서 플랫폼별 저장소를 연결하고, 네이티브·JavaScript에서 돌아오는 콜백을 Bevy의 갱신 흐름으로 전달했다.
+게임 코드의 저장 API를 유지하면서 플랫폼별 저장소를 연결하고, 네이티브·JavaScript에서 돌아오는 콜백을 Bevy의 갱신 흐름으로 전달했습니다.
 
 ## 빌드 타깃에 따라 선택되는 공통 API
 
-`src/ffi/mod.rs`는 `Ffi` 타입과 다음 trait를 정의한다.
+`src/ffi/mod.rs`는 `Ffi` 타입과 다음 trait를 정의합니다.
 
 ```rust
 pub trait FfiKv {
@@ -34,19 +34,19 @@ pub trait FfiKv {
 }
 ```
 
-각 플랫폼 모듈은 같은 `Ffi`에 `FfiKv`를 구현한다. `cfg` 조건으로 iOS·Android·wasm32 모듈 중 해당하는 구현을 컴파일하며, 나머지 환경은 desktop 구현을 사용한다.
+각 플랫폼 모듈은 같은 `Ffi`에 `FfiKv`를 구현합니다. `cfg` 조건으로 iOS·Android·wasm32 모듈 중 해당하는 구현을 컴파일하며, 나머지 환경은 desktop 구현을 사용합니다.
 
-이는 런타임에 저장 백엔드를 선택하거나 trait object를 교체하는 구조가 아니다. 빌드 타깃에서 구현이 정해지므로 게임에서는 `Ffi::get("score")`, `Ffi::set("score", &json)`이라는 동일한 호출을 사용할 수 있다.
+이는 런타임에 저장 백엔드를 선택하거나 trait object를 교체하는 구조가 아닙니다. 빌드 타깃에서 구현이 정해지므로 게임에서는 `Ffi::get("score")`, `Ffi::set("score", &json)`이라는 동일한 호출을 사용할 수 있습니다.
 
-연결 확인용 `FfiGreet`도 별도로 두었으며, 모바일에서만 정의하는 `FfiAd`는 광고 표시 요청을 담당한다. 데스크톱 파일 저장까지 모두 외부 언어를 호출하는 것은 아니지만 플랫폼 서비스 접근을 같은 모듈 아래로 모았다는 의미에서 FFI 계층으로 관리한다.
+연결 확인용 `FfiGreet`도 별도로 두었으며, 모바일에서만 정의하는 `FfiAd`는 광고 표시 요청을 담당합니다. 데스크톱 파일 저장까지 모두 외부 언어를 호출하는 것은 아니지만 플랫폼 서비스 접근을 같은 모듈 아래로 모았다는 의미에서 FFI 계층으로 관리합니다.
 
 ## 최고 점수를 문자열 계약으로 통일
 
-공통 데이터는 Serde를 적용한 `Score { score: u32 }`이며, 저장 키는 `score`다. 값은 예를 들어 `{"score":42}`와 같은 JSON 문자열이다. 플랫폼 코드가 게임 점수 타입을 이해할 필요 없이 문자열을 저장하고 반환하도록 했다.
+공통 데이터는 Serde를 적용한 `Score { score: u32 }`이며, 저장 키는 `score`입니다. 값은 예를 들어 `{"score":42}`와 같은 JSON 문자열입니다. 플랫폼 코드가 게임 점수 타입을 이해할 필요 없이 문자열을 저장하고 반환하도록 했습니다.
 
-결과 패널 생성 시 기존 기록을 읽어 숫자 UI를 만들고, 패널 상승 완료 콜백에서 다시 기록을 확인한다. 현재 점수가 저장된 최고 기록보다 클 때만 JSON으로 직렬화해 저장한다. 기록 갱신은 UI 카운트 애니메이션 완료를 기다리지 않는다.
+결과 패널 생성 시 기존 기록을 읽어 숫자 UI를 만들고, 패널 상승 완료 콜백에서 다시 기록을 확인합니다. 현재 점수가 저장된 최고 기록보다 클 때만 JSON으로 직렬화해 저장합니다. 기록 갱신은 UI 카운트 애니메이션 완료를 기다리지 않습니다.
 
-최고 점수는 기기 또는 브라우저에 JSON으로 저장한다. 빈 문자열이나 JSON 해석 실패는 기존 최고 기록 0으로 처리한다.
+최고 점수는 기기 또는 브라우저에 JSON으로 저장합니다. 빈 문자열이나 JSON 해석 실패는 기존 최고 기록 0으로 처리합니다.
 
 ## 플랫폼별 저장 경로
 
@@ -59,44 +59,44 @@ pub trait FfiKv {
 
 ### Desktop: 앱 데이터 디렉터리의 파일
 
-`ProjectDirs`로 `bevy_flappybird`의 데이터 경로를 얻고 그 아래 `kv` 폴더를 사용한다. 읽기는 키 이름의 파일을 열어 전체 내용을 문자열로 반환한다. 쓰기는 폴더를 만든 다음 파일을 생성해 전체 문자열을 기록한다.
+`ProjectDirs`로 `bevy_flappybird`의 데이터 경로를 얻고 그 아래 `kv` 폴더를 사용합니다. 읽기는 키 이름의 파일을 열어 전체 내용을 문자열로 반환합니다. 쓰기는 폴더를 만든 다음 파일을 생성해 전체 문자열을 기록합니다.
 
-실행 파일 옆의 상대 경로 대신 사용자 데이터 경로를 사용하는 점이 특징이다. 파일 접근 오류는 로그와 빈 반환값 또는 조기 반환으로 처리한다.
+실행 파일 옆의 상대 경로 대신 사용자 데이터 경로를 사용하는 점이 특징입니다. 파일 접근 오류는 로그와 빈 반환값 또는 조기 반환으로 처리합니다.
 
 ### Android: JNI로 Activity 저장 함수 호출
 
-Rust는 `ndk_context`에서 VM과 Activity 컨텍스트를 얻고 `attach_current_thread()` 후 JNI 호출을 수행한다. 키와 값을 Java 문자열로 만들고 `ffiKvGet` 또는 `ffiKvSet` 메서드를 이름·시그니처로 찾는다.
+Rust는 `ndk_context`에서 VM과 Activity 컨텍스트를 얻고 `attach_current_thread()` 후 JNI 호출을 수행합니다. 키와 값을 Java 문자열로 만들고 `ffiKvGet` 또는 `ffiKvSet` 메서드를 이름·시그니처로 찾습니다.
 
-Kotlin의 `MainActivity`는 NativeActivity를 상속하며, `onCreate()`에서 SharedPreferences를 준비한다. 읽기는 `getString()`, 쓰기는 `putString(...).apply()`로 연결한다. Rust의 JSON 문자열이 Kotlin에서 게임 구조체로 변환되는 것은 아니다.
+Kotlin의 `MainActivity`는 NativeActivity를 상속하며, `onCreate()`에서 SharedPreferences를 준비합니다. 읽기는 `getString()`, 쓰기는 `putString(...).apply()`로 연결합니다. Rust의 JSON 문자열이 Kotlin에서 게임 구조체로 변환되는 것은 아닙니다.
 
-JNI 호출 코드에는 여러 `unwrap()`이 있어 Activity 초기화 순서, 메서드 이름·시그니처, Java 예외가 호출 계약에 영향을 준다. JVM에 현재 스레드를 연결하는 것과 Android UI 스레드에서 실행하는 것은 다르다. 광고 표시 함수에서는 별도로 `runOnUiThread`를 사용한다.
+JNI 호출 코드에는 여러 `unwrap()`이 있어 Activity 초기화 순서, 메서드 이름·시그니처, Java 예외가 호출 계약에 영향을 줍니다. JVM에 현재 스레드를 연결하는 것과 Android UI 스레드에서 실행하는 것은 다릅니다. 광고 표시 함수에서는 별도로 `runOnUiThread`를 사용합니다.
 
 ### iOS: C 문자열로 Rust와 Swift 연결
 
-Swift는 `@_cdecl("ffi_kv_get")`, `@_cdecl("ffi_kv_set")`으로 C ABI 심벌을 내보낸다. Rust는 `extern "C"`로 선언한 함수를 호출하며, 문자열을 `CString`과 `CStr`로 변환한다. Swift에서는 C 문자열을 String으로 바꾸고 UserDefaults에 접근한다.
+Swift는 `@_cdecl("ffi_kv_get")`, `@_cdecl("ffi_kv_set")`으로 C ABI 심벌을 내보냅니다. Rust는 `extern "C"`로 선언한 함수를 호출하며, 문자열을 `CString`과 `CStr`로 변환합니다. Swift에서는 C 문자열을 String으로 바꾸고 UserDefaults에 접근합니다.
 
 ### Web: WASM과 JavaScript의 저장소 연결
 
-`wasm_bindgen`으로 `ffi_kv_get/set`을 import하고 HTML에서 같은 이름의 JavaScript 함수를 제공한다. 함수는 localStorage의 `getItem/setItem`을 호출한다. 읽은 `JsValue`가 문자열이 아니면 Rust에서는 빈 문자열로 처리한다.
+`wasm_bindgen`으로 `ffi_kv_get/set`을 import하고 HTML에서 같은 이름의 JavaScript 함수를 제공합니다. 함수는 localStorage의 `getItem/setItem`을 호출합니다. 읽은 `JsValue`가 문자열이 아니면 Rust에서는 빈 문자열로 처리합니다.
 
-HTML은 WASM 초기화 후 `start_app()`을 호출한다. Rust의 공통 App은 `#target` canvas를 사용하며, 게임 로직은 JavaScript 쪽 저장 API의 세부 구현을 알 필요가 없다.
+HTML은 WASM 초기화 후 `start_app()`을 호출합니다. Rust의 공통 App은 `#target` canvas를 사용하며, 게임 로직은 JavaScript 쪽 저장 API의 세부 구현을 알 필요가 없습니다.
 
 ## 외부 콜백은 채널을 통해 Bevy로 전달
 
-외부 코드가 직접 Bevy World를 조작하지 않도록 `CrossbeamEventSender<FfiEvent>`를 사용한다. `FfiPlugin`이 Crossbeam 이벤트를 등록하고 Sender를 복제해 전역 `OnceLock`에 보관한다.
+외부 코드가 직접 Bevy World를 조작하지 않도록 `CrossbeamEventSender<FfiEvent>`를 사용합니다. `FfiPlugin`이 Crossbeam 이벤트를 등록하고 Sender를 복제해 전역 `OnceLock`에 보관합니다.
 
-연결 확인 버튼의 흐름은 다음과 같다.
+연결 확인 버튼의 흐름은 다음과 같습니다.
 
-1. Inspector에서 `Ffi::greet()`를 호출한다.
-2. Android는 Kotlin, iOS는 Swift, Web은 JavaScript 함수를 거친다.
-3. 호스트 함수가 Rust로 공개한 `ffi_greet_to_rust()`를 다시 호출한다.
-4. Rust 콜백이 Sender로 `FfiEvent::Greet`를 보낸다.
-5. Bevy Update의 이벤트 조건에 따라 로그 시스템이 실행된다.
+1. Inspector에서 `Ffi::greet()`를 호출합니다.
+2. Android는 Kotlin, iOS는 Swift, Web은 JavaScript 함수를 거칩니다.
+3. 호스트 함수가 Rust로 공개한 `ffi_greet_to_rust()`를 다시 호출합니다.
+4. Rust 콜백이 Sender로 `FfiEvent::Greet`를 보냅니다.
+5. Bevy Update의 이벤트 조건에 따라 로그 시스템이 실행됩니다.
 
-Desktop은 외부 언어 대신 별도 스레드에서 0.5초 뒤 같은 이벤트를 보내는 테스트 구현이다. 이를 통해 외부 또는 다른 스레드에서 돌아오는 응답의 진입점을 공통화했다. 저장 API 자체를 비동기로 만든 것은 아니며, 저장 읽기·쓰기는 호출한 위치에서 수행한다.
+Desktop은 외부 언어 대신 별도 스레드에서 0.5초 뒤 같은 이벤트를 보내는 테스트 구현입니다. 이를 통해 외부 또는 다른 스레드에서 돌아오는 응답의 진입점을 공통화했습니다. 저장 API 자체를 비동기로 만든 것은 아니며, 저장 읽기·쓰기는 호출한 위치에서 수행합니다.
 
 ## 광고 종료 연결과 현재 활성 범위
 
-모바일 호스트에는 광고 표시·종료 콜백 구현이 있고, 종료 시 Rust의 `ffi_ad_dismiss()`가 `FfiEvent::AdDismiss`를 전달한다. Bevy Result 상태에서는 이를 받아 `ResultToGamePickingEvent`를 보내는 부활 연결이 마련돼 있다. 이 콜백은 보상 지급 검증이 아니라 전체 화면 광고가 닫힌 시점의 신호다.
+모바일 호스트에는 광고 표시·종료 콜백 구현이 있고, 종료 시 Rust의 `ffi_ad_dismiss()`가 `FfiEvent::AdDismiss`를 전달합니다. Bevy Result 상태에서는 이를 받아 `ResultToGamePickingEvent`를 보내는 부활 연결이 마련돼 있습니다. 이 콜백은 보상 지급 검증이 아니라 전체 화면 광고가 닫힌 시점의 신호입니다.
 
-일반 결과 화면의 광고 버튼은 현재 비활성화돼 있다. Android·iOS 광고 초기화와 Inspector의 테스트 버튼은 남아 있지만, 일반 플레이에서 광고 부활로 이어지지는 않는다.
+일반 결과 화면의 광고 버튼은 현재 비활성화돼 있습니다. Android·iOS 광고 초기화와 Inspector의 테스트 버튼은 남아 있지만, 일반 플레이에서 광고 부활로 이어지지는 않습니다.

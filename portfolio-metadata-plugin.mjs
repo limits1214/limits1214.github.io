@@ -99,6 +99,8 @@ function loadProjectDefinitions(value, source) {
       title: requireString(project, 'title', itemSource),
       period: requireString(project, 'period', itemSource),
       description: requireString(project, 'description', itemSource),
+      thumbnail: optionalString(project.thumbnail, 'thumbnail', itemSource),
+      thumbnailAlt: optionalString(project.thumbnailAlt, 'thumbnailAlt', itemSource),
       role: optionalString(project.role, 'role', itemSource),
       teamSize: optionalString(project.teamSize, 'teamSize', itemSource),
       platform: optionalString(project.platform, 'platform', itemSource),

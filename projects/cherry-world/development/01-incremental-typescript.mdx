@@ -17,21 +17,21 @@ tags:
 
 ## 개요 {/* #article-introduction */}
 
-C\*erry World에서 TypeScript를 사용했다. 기존 JavaScript 코드를 전부 다시 작성하는 방식 대신, 필요한 기능을 TypeScript로 작성하고 빌드한 JavaScript를 기존 웹 페이지에 연결하는 점진적인 도입 방식을 제안했다.
+C\*erry World에서 TypeScript를 사용했습니다. 기존 JavaScript 코드를 전부 다시 작성하는 방식 대신, 필요한 기능을 TypeScript로 작성하고 빌드한 JavaScript를 기존 웹 페이지에 연결하는 점진적인 도입 방식을 제안했습니다.
 
-도입 당시 기존 라이브러리의 타입 선언, 기능별 빌드 진입점, 결과물 연결과 소스 맵 디버깅 방법을 팀에 공유했다.
+도입 당시 기존 라이브러리의 타입 선언, 기능별 빌드 진입점, 결과물 연결과 소스 맵 디버깅 방법을 팀에 공유했습니다.
 
-## 문제: 언어를 바꾸면 작업 방식도 바뀐다
+## 문제: 언어를 바꾸면 작업 방식도 바뀝니다
 
-기존 JavaScript의 유연함은 빠르게 기능을 추가하는 데 편리했지만, 유지보수 시에는 함수 인자와 데이터 형태를 파악하기 어려운 면이 있었다. 타입으로 호출 규약을 표현하고 개발 단계에서 잘못된 사용을 확인할 수 있는 환경을 마련하고 싶었다.
+기존 JavaScript의 유연함은 빠르게 기능을 추가하는 데 편리했지만, 유지보수 시에는 함수 인자와 데이터 형태를 파악하기 어려운 면이 있었습니다. 타입으로 호출 규약을 표현하고 개발 단계에서 잘못된 사용을 확인할 수 있는 환경을 마련하고 싶었습니다.
 
-다만 기존 웹 프로젝트는 Node 기반 프런트엔드 프로젝트가 아니었다. TypeScript를 사용하려면 의존성 설치와 컴파일 과정이 추가되고, 결과물을 기존 정적 파일 구조에 연결해야 했다. 팀원에게는 새로운 문법과 작업 흐름을 익히는 비용도 생긴다.
+다만 기존 웹 프로젝트는 Node 기반 프런트엔드 프로젝트가 아니었습니다. TypeScript를 사용하려면 의존성 설치와 컴파일 과정이 추가되고, 결과물을 기존 정적 파일 구조에 연결해야 했습니다. 팀원에게는 새로운 문법과 작업 흐름을 익히는 비용도 생깁니다.
 
-따라서 제안의 중심은 전면 전환이 아니라 공존이었다. 기존 JavaScript 작업을 계속할 수 있게 두면서, TypeScript가 필요한 기능에 적용할 수 있는 경로를 마련하는 방향이었다.
+따라서 제안의 중심은 전면 전환이 아니라 공존이었습니다. 기존 JavaScript 작업을 계속할 수 있게 두면서, TypeScript가 필요한 기능에 적용할 수 있는 경로를 마련하는 방향이었습니다.
 
 ## 빌드 도구와 실행 환경을 분리
 
-브라우저가 TypeScript를 직접 실행하도록 바꾸거나 서비스 서버를 Node로 전환하는 설계가 아니었다. Node·npm은 개발 도구 실행에 사용하고, 브라우저에는 JavaScript 결과물을 전달하는 구조다.
+브라우저가 TypeScript를 직접 실행하도록 바꾸거나 서비스 서버를 Node로 전환하는 설계가 아니었습니다. Node·npm은 개발 도구 실행에 사용하고, 브라우저에는 JavaScript 결과물을 전달하는 구조입니다.
 
 ```text
 기능별 TypeScript 소스 + 기존 JS의 타입 선언
@@ -51,18 +51,18 @@ C\*erry World에서 TypeScript를 사용했다. 기존 JavaScript 코드를 전�
 | webpack 설정 | 진입점·번들 결과물·외부 노출 방식 |
 | 빌드 출력 폴더 | 기존 페이지에 연결할 JavaScript 결과물 |
 
-기능별 `index.ts`는 당시 제안한 구성 규칙이다. TypeScript 자체가 모든 폴더에 그 이름의 파일을 요구하는 것은 아니다. webpack은 설정된 진입점에서 의존성을 따라 번들을 구성하며 복수 진입점을 사용할 수 있다. [webpack Entry Points](https://webpack.js.org/concepts/entry-points/)
+기능별 `index.ts`는 당시 제안한 구성 규칙입니다. TypeScript 자체가 모든 폴더에 그 이름의 파일을 요구하는 것은 아닙니다. webpack은 설정된 진입점에서 의존성을 따라 번들을 구성하며 복수 진입점을 사용할 수 있습니다. [webpack Entry Points](https://webpack.js.org/concepts/entry-points/)
 
 [![타입 선언, 기능별 src, dist, npm과 webpack 설정을 분리한 실제 폴더 구성](/img/work-evidence/typescript-project-layout.png)](/img/work-evidence/typescript-project-layout.png)
 
-*2023.07.04 도입 자료의 폴더 구성 캡처.* `@types`, `src`, `dist`와 빌드 설정을 별도로 두었다. 위 설명에 대응하는 실제 작업 구조이며, 관련 없는 하단 폴더만 잘라 냈다.
+*2023.07.04 도입 자료의 폴더 구성 캡처.* `@types`, `src`, `dist`와 빌드 설정을 별도로 두었습니다. 위 설명에 대응하는 실제 작업 구조이며, 관련 없는 하단 폴더만 잘라 냈습니다.
 
 <details>
 <summary>기능별 TypeScript 진입점을 펼친 실제 소스 트리</summary>
 
 [![기능 폴더마다 index.ts와 구현 파일을 배치한 TypeScript 소스 트리](/img/work-evidence/typescript-feature-entrypoints.png)](/img/work-evidence/typescript-feature-entrypoints.png)
 
-*같은 도입 자료에서 src를 펼친 화면.* 걸음 처리·걷기 화면·공통 유틸리티·테스트 코드의 폴더와 `index.ts`를 확인할 수 있다. 위의 루트 폴더 구성과 달리 기능 단위로 진입점을 나눈 모습을 보여 준다. 사용자 경로가 없는 소스 트리 영역만 사용했다.
+*같은 도입 자료에서 src를 펼친 화면.* 걸음 처리·걷기 화면·공통 유틸리티·테스트 코드의 폴더와 `index.ts`를 확인할 수 있습니다. 위의 루트 폴더 구성과 달리 기능 단위로 진입점을 나눈 모습을 보여 줍니다. 사용자 경로가 없는 소스 트리 영역만 사용했습니다.
 
 </details>
 
@@ -70,42 +70,42 @@ C\*erry World에서 TypeScript를 사용했다. 기존 JavaScript 코드를 전�
 
 ### TypeScript에서 기존 JavaScript 호출
 
-기존 라이브러리를 전부 TypeScript로 옮기는 대신, 기존 JavaScript의 인터페이스를 타입 선언으로 마련했다. 도입 자료에는 필요한 선언을 만들어 두었고 이후 호출이 늘어나면 보강하는 방식으로 설명했다.
+기존 라이브러리를 전부 TypeScript로 옮기는 대신, 기존 JavaScript의 인터페이스를 타입 선언으로 마련했습니다. 도입 자료에는 필요한 선언을 만들어 두었고 이후 호출이 늘어나면 보강하는 방식으로 설명했습니다.
 
-타입 선언은 구현을 대체하지 않는다. 기존 JavaScript가 실제 실행 기능을 제공하고, 선언은 TypeScript 작성 시 인자와 반환값을 이해하고 검사하는 데 사용된다. 선언과 실제 동작이 어긋나지 않도록 함께 유지해야 한다.
+타입 선언은 구현을 대체하지 않습니다. 기존 JavaScript가 실제 실행 기능을 제공하고, 선언은 TypeScript 작성 시 인자와 반환값을 이해하고 검사하는 데 사용됩니다. 선언과 실제 동작이 어긋나지 않도록 함께 유지해야 합니다.
 
 ### 기존 JavaScript에서 새 기능 호출
 
-새 기능은 JavaScript로 빌드하고, webpack의 외부 노출 설정을 통해 기존 페이지에서 접근할 이름을 제공하는 방식으로 설명했다. 페이지는 결과물을 스크립트로 로드한 뒤 노출된 API를 호출한다.
+새 기능은 JavaScript로 빌드하고, webpack의 외부 노출 설정을 통해 기존 페이지에서 접근할 이름을 제공하는 방식으로 설명했습니다. 페이지는 결과물을 스크립트로 로드한 뒤 노출된 API를 호출합니다.
 
 ## 실제 작업 흐름과 추가 비용
 
-도입 자료에서 안내한 기본 순서는 다음과 같다.
+도입 자료에서 안내한 기본 순서는 다음과 같습니다.
 
-1. 의존성이 없는 개발 환경에서는 `npm install`로 준비한다.
-2. 기능별 폴더에 TypeScript 코드를 작성한다.
-3. `npm run build`로 JavaScript 결과물을 만든다.
-4. 결과물을 기존 정적 파일 위치에 배치하고 페이지에서 연결한다.
-5. 원본 TypeScript를 기준으로 디버깅하며 동작을 확인한다.
+1. 의존성이 없는 개발 환경에서는 `npm install`로 준비합니다.
+2. 기능별 폴더에 TypeScript 코드를 작성합니다.
+3. `npm run build`로 JavaScript 결과물을 만듭니다.
+4. 결과물을 기존 정적 파일 위치에 배치하고 페이지에서 연결합니다.
+5. 원본 TypeScript를 기준으로 디버깅하며 동작을 확인합니다.
 
-빌드한 JavaScript 결과물은 기존 페이지에서 참조하는 위치로 직접 복사했다.
+빌드한 JavaScript 결과물은 기존 페이지에서 참조하는 위치로 직접 복사했습니다.
 
 ## 컴파일 이후에도 원본으로 디버깅
 
-변환·번들링한 JavaScript만 보면 작성한 TypeScript와 구조가 달라질 수 있다. 이를 위해 소스 맵을 통한 디버깅 방법을 자료에 포함했다. 소스 맵은 실행 중인 JavaScript와 원본 TypeScript 사이의 위치를 연결해 디버거가 원본을 표시하도록 돕는다. [TypeScript sourceMap](https://www.typescriptlang.org/tsconfig/sourceMap.html)
+변환·번들링한 JavaScript만 보면 작성한 TypeScript와 구조가 달라질 수 있습니다. 이를 위해 소스 맵을 통한 디버깅 방법을 자료에 포함했습니다. 소스 맵은 실행 중인 JavaScript와 원본 TypeScript 사이의 위치를 연결해 디버거가 원본을 표시하도록 돕습니다. [TypeScript sourceMap](https://www.typescriptlang.org/tsconfig/sourceMap.html)
 
 ### 당시 디버깅 예시 화면
 
 [![브라우저 개발자 도구에서 Test1.ts 원본 파일을 열고 13번째 줄에 정지한 디버깅 예시](/img/work-evidence/typescript-source-debugging.png)](/img/work-evidence/typescript-source-debugging.png)
 
-*도입 발표 자료에 포함했던 실제 테스트 화면이다.* 소스 트리의 TypeScript 파일과 실행 위치를 보여 준다. 회사·서비스명이 포함된 호스트와 탭, 내부 경로·호출 코드와 인라인 소스 맵은 가리거나 잘랐다.
+*도입 발표 자료에 포함했던 실제 테스트 화면입니다.* 소스 트리의 TypeScript 파일과 실행 위치를 보여 줍니다. 회사·서비스명이 포함된 호스트와 탭, 내부 경로·호출 코드와 인라인 소스 맵은 가리거나 잘랐습니다.
 
-`target`은 출력 JavaScript 문법의 변환 수준을 정한다. 실행 환경에 없는 API까지 추가해 주지는 않으므로, 브라우저별 API 지원 여부도 확인해야 한다. [TypeScript target](https://www.typescriptlang.org/tsconfig/target.html)
+`target`은 출력 JavaScript 문법의 변환 수준을 정합니다. 실행 환경에 없는 API까지 추가해 주지는 않으므로, 브라우저별 API 지원 여부도 확인해야 합니다. [TypeScript target](https://www.typescriptlang.org/tsconfig/target.html)
 
 ## 구현 결과 {/* #기여와-적용-범위 */}
 
-이 작업에서는 새로운 언어를 권하는 데서 끝내지 않고, 기존 코드와 어떻게 연결하고 빌드하고 디버깅할지 설명 자료로 정리했다. 기존 JavaScript 인터페이스의 타입 선언을 마련하고 C\*erry World에서 TypeScript를 사용했다.
+이 작업에서는 새로운 언어를 권하는 데서 끝내지 않고, 기존 코드와 어떻게 연결하고 빌드하고 디버깅할지 설명 자료로 정리했습니다. 기존 JavaScript 인터페이스의 타입 선언을 마련하고 C\*erry World에서 TypeScript를 사용했습니다.
 
-기존 코드를 유지하면서 기능 단위로 TypeScript를 적용할 수 있게 했다. 대신 타입 선언과 실제 구현을 함께 관리하고, 빌드 결과물이 최신 소스와 일치하는지 확인해야 했다.
+기존 코드를 유지하면서 기능 단위로 TypeScript를 적용할 수 있게 했습니다. 대신 타입 선언과 실제 구현을 함께 관리하고, 빌드 결과물이 최신 소스와 일치하는지 확인해야 했습니다.
 
-팀 공통 정기 배포 업무는 [배포·브랜치 관리 문서](/projects/cherry/release-branch-management)에 별도로 정리했다.
+팀 공통 정기 배포 업무는 [배포·브랜치 관리 문서](/projects/cherry/release-branch-management)에 별도로 정리했습니다.

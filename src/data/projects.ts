@@ -11,6 +11,8 @@ export type PortfolioProject = {
   period: string;
   description: string;
   role?: string;
+  thumbnail?: string;
+  thumbnailAlt?: string;
   teamSize?: string;
   platform?: string;
   githubUrl?: string;

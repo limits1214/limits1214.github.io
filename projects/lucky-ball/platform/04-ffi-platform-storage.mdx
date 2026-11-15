@@ -18,9 +18,9 @@ tags:
 
 ## 저장 화면이 플랫폼 API를 직접 알지 않도록
 
-Lucky Ball의 사용자 규칙과 결과 목록은 JSON 문자열이다. UI는 이를 `kv_get`, `kv_set`으로 읽고 쓰며, Android의 SharedPreferences나 iOS의 UserDefaults를 직접 호출하지 않는다. 플랫폼의 저장소·시간·언어 정보를 공통 Rust API 뒤로 분리했다.
+Lucky Ball의 사용자 규칙과 결과 목록은 JSON 문자열입니다. UI는 이를 `kv_get`, `kv_set`으로 읽고 쓰며, Android의 SharedPreferences나 iOS의 UserDefaults를 직접 호출하지 않습니다. 플랫폼의 저장소·시간·언어 정보를 공통 Rust API 뒤로 분리했습니다.
 
-`KvTrait`, `AppFfiTrait` 등을 선언하고 `ffi/platform/mod.rs`의 target 조건으로 해당 구현을 선택한다. 런타임에 trait object를 교체하는 구조가 아니라, 빌드 대상에 맞는 `impl`을 컴파일하는 방식이다. Desktop 경로는 이름상 FFI 모듈에 있지만 Rust 파일 API를 직접 사용한다.
+`KvTrait`, `AppFfiTrait` 등을 선언하고 `ffi/platform/mod.rs`의 target 조건으로 해당 구현을 선택합니다. 런타임에 trait object를 교체하는 구조가 아니라, 빌드 대상에 맞는 `impl`을 컴파일하는 방식입니다. Desktop 경로는 이름상 FFI 모듈에 있지만 Rust 파일 API를 직접 사용합니다.
 
 | 대상 | 공통 API 이후의 연결 | 저장 위치·수단 |
 | --- | --- | --- |
@@ -29,13 +29,13 @@ Lucky Ball의 사용자 규칙과 결과 목록은 JSON 문자열이다. UI는 �
 | iOS | C ABI → Swift 함수 | UserDefaults.standard |
 | Web | wasm-bindgen → JavaScript 함수 | localStorage |
 
-저장 키와 JSON 형식을 공유한다는 뜻이지 기기 사이에서 기록이 동기화된다는 뜻은 아니다. 서버 저장·계정 동기화는 이 경로에 없다.
+저장 키와 JSON 형식을 공유한다는 뜻이지 기기 사이에서 기록이 동기화된다는 뜻은 아닙니다. 서버 저장·계정 동기화는 이 경로에 없습니다.
 
 ## Android: JVM 연결과 메서드 시그니처
 
-Android 구현은 `ndk_context::android_context()`에서 VM과 context 포인터를 얻고, `JavaVM`과 `JObject`로 연결한다. 호출하는 현재 스레드를 `attach_current_thread()`로 JVM에 연결한 뒤 문자열을 Java 객체로 만들고 Activity 메서드를 호출한다.
+Android 구현은 `ndk_context::android_context()`에서 VM과 context 포인터를 얻고, `JavaVM`과 `JObject`로 연결합니다. 호출하는 현재 스레드를 `attach_current_thread()`로 JVM에 연결한 뒤 문자열을 Java 객체로 만들고 Activity 메서드를 호출합니다.
 
-저장은 `ffiKvSet`을 다음 시그니처로 호출한다.
+저장은 `ffiKvSet`을 다음 시그니처로 호출합니다.
 
 ```text
 (Ljava/lang/String;Ljava/lang/String;)V
@@ -43,41 +43,41 @@ Android 구현은 `ndk_context::android_context()`에서 VM과 context 포인터
   반환: void
 ```
 
-조회는 `(Ljava/lang/String;)Ljava/lang/String;`으로 결과 객체를 받고, `JString`을 거쳐 Rust `String`으로 복사한다. 존재 여부는 `Z`, epoch 시간은 `J`, 시간대 offset은 `I` 반환형을 사용한다. 메서드 이름뿐 아니라 인자·반환 시그니처도 양쪽의 계약이다.
+조회는 `(Ljava/lang/String;)Ljava/lang/String;`으로 결과 객체를 받고, `JString`을 거쳐 Rust `String`으로 복사합니다. 존재 여부는 `Z`, epoch 시간은 `J`, 시간대 offset은 `I` 반환형을 사용합니다. 메서드 이름뿐 아니라 인자·반환 시그니처도 양쪽의 계약입니다.
 
-`MainActivity`는 `NativeActivity`를 상속하며 `onCreate()`에서 SharedPreferences를 준비한다. set·delete는 editor의 `apply()`를 사용하고, get은 없는 키를 빈 문자열로 돌려준다. Rust 래퍼는 쓰기 성공 여부나 영구 기록 완료 결과를 UI에 반환하지 않는다.
+`MainActivity`는 `NativeActivity`를 상속하며 `onCreate()`에서 SharedPreferences를 준비합니다. set·delete는 editor의 `apply()`를 사용하고, get은 없는 키를 빈 문자열로 돌려줍니다. Rust 래퍼는 쓰기 성공 여부나 영구 기록 완료 결과를 UI에 반환하지 않습니다.
 
-현재 JNI 호출·문자열 생성에는 `unwrap()`이 사용된다. Activity 초기화 순서, 메서드 이름 변경, JNI 예외를 공통 오류 모델로 전달하는 구조는 아니다. locale 메서드는 양쪽 모두 `fiiGetLocale`이라는 실제 이름을 사용하므로 이름을 정리할 때도 호출자와 구현을 함께 변경해야 한다.
+현재 JNI 호출·문자열 생성에는 `unwrap()`이 사용됩니다. Activity 초기화 순서, 메서드 이름 변경, JNI 예외를 공통 오류 모델로 전달하는 구조는 아닙니다. locale 메서드는 양쪽 모두 `fiiGetLocale`이라는 실제 이름을 사용하므로 이름을 정리할 때도 호출자와 구현을 함께 변경해야 합니다.
 
-Android 폴더의 `native-lib.cpp`에는 템플릿의 문자열 반환 JNI 함수가 남아 있지만, 저장소 연결의 중심 경로는 Rust가 MainActivity 메서드를 직접 호출하는 구현이다.
+Android 폴더의 `native-lib.cpp`에는 템플릿의 문자열 반환 JNI 함수가 남아 있지만, 저장소 연결의 중심 경로는 Rust가 MainActivity 메서드를 직접 호출하는 구현입니다.
 
 ## iOS: Rust 선언과 Swift C 심볼 연결
 
-Rust는 `extern "C"`로 `ffi_kv_get`, `ffi_kv_set` 등을 선언하고, Swift는 같은 이름을 `@_cdecl`로 노출한다. Swift 구현이 C 문자열을 Swift String으로 바꿔 UserDefaults에서 읽고 쓴다.
+Rust는 `extern "C"`로 `ffi_kv_get`, `ffi_kv_set` 등을 선언하고, Swift는 같은 이름을 `@_cdecl`로 노출합니다. Swift 구현이 C 문자열을 Swift String으로 바꿔 UserDefaults에서 읽고 씁니다.
 
-반대 방향의 콜백은 Rust가 `#[no_mangle] pub extern "C" fn`으로 공개한다. Swift 쪽 bridging header에 콜백 선언을 두어 초기화·광고 결과를 Rust로 전달하는 형태다. 문자열이나 객체를 그대로 공유하는 것이 아니라 C ABI로 표현 가능한 값과 포인터를 경계로 사용한다.
+반대 방향의 콜백은 Rust가 `#[no_mangle] pub extern "C" fn`으로 공개합니다. Swift 쪽 bridging header에 콜백 선언을 두어 초기화·광고 결과를 Rust로 전달하는 형태입니다. 문자열이나 객체를 그대로 공유하는 것이 아니라 C ABI로 표현 가능한 값과 포인터를 경계로 사용합니다.
 
 ## Web: wasm-bindgen과 JavaScript 함수
 
-WASM 구현은 `#[wasm_bindgen] extern "C"`에 선언한 함수를 호출한다. 실제 함수는 `web/index.html`에 있으며, 키값 함수들이 localStorage의 getItem·setItem·removeItem에 대응한다. 조회한 키가 없으면 빈 문자열을 반환한다.
+WASM 구현은 `#[wasm_bindgen] extern "C"`에 선언한 함수를 호출합니다. 실제 함수는 `web/index.html`에 있으며, 키값 함수들이 localStorage의 getItem·setItem·removeItem에 대응합니다. 조회한 키가 없으면 빈 문자열을 반환합니다.
 
-Web 문자열 변환에는 wasm-bindgen 바인딩을 사용한다.
+Web 문자열 변환에는 wasm-bindgen 바인딩을 사용합니다.
 
-epoch 초는 Rust에서 `i64`로 받는다. JavaScript 함수는 `Date.now()`를 초 단위로 변환한 뒤 `BigInt`로 반환한다. 브라우저 Number만 반환하는 함수와 같은 계약으로 취급하지 않고, 바인딩의 반환 타입과 맞춰 둔 구성이다.
+epoch 초는 Rust에서 `i64`로 받습니다. JavaScript 함수는 `Date.now()`를 초 단위로 변환한 뒤 `BigInt`로 반환합니다. 브라우저 Number만 반환하는 함수와 같은 계약으로 취급하지 않고, 바인딩의 반환 타입과 맞춰 둔 구성입니다.
 
-localStorage의 사용 불가·용량 초과 같은 예외를 변환하는 `try/catch`나 Rust `Result` 경로는 현재 없다. 조회값이 없을 때 빈 문자열을 주는 처리와 모든 저장 오류를 안전하게 복구하는 처리는 구분한다.
+localStorage의 사용 불가·용량 초과 같은 예외를 변환하는 `try/catch`나 Rust `Result` 경로는 현재 없습니다. 조회값이 없을 때 빈 문자열을 주는 처리와 모든 저장 오류를 안전하게 복구하는 처리는 구분합니다.
 
 ## Desktop: 동일한 인터페이스의 파일 저장
 
-Desktop은 ProjectDirs에서 데이터 경로를 얻어 `kv` 하위 디렉터리를 만들고 키를 파일명으로 사용한다. 저장은 파일 생성 후 문자열 바이트 기록, 조회는 파일 전체를 UTF-8 문자열로 읽는 방식이다.
+Desktop은 ProjectDirs에서 데이터 경로를 얻어 `kv` 하위 디렉터리를 만들고 키를 파일명으로 사용합니다. 저장은 파일 생성 후 문자열 바이트 기록, 조회는 파일 전체를 UTF-8 문자열로 읽는 방식입니다.
 
-파일 접근 실패는 로그와 빈 문자열·false로 처리한다. UI에서 사용하는 고정 키를 파일명으로 사용한다.
+파일 접근 실패는 로그와 빈 문자열·false로 처리합니다. UI에서 사용하는 고정 키를 파일명으로 사용합니다.
 
-저장소 테스트는 파일 쓰기·읽기·삭제와 출력 확인 중심이다. 저장 결과를 assertion으로 비교하는 공통 테스트는 아직 없다.
+저장소 테스트는 파일 쓰기·읽기·삭제와 출력 확인 중심입니다. 저장 결과를 assertion으로 비교하는 공통 테스트는 아직 없습니다.
 
 ## 외부 콜백을 Bevy 이벤트로 전달
 
-`FfiPlugin`은 Crossbeam 이벤트를 등록하고 sender를 `OnceLock`에 보관한다. Android는 `RustBinding`의 static native 메서드와 `jni_fn` export를, iOS는 C 콜백 export를 통해 같은 `FfiEvents`로 변환한다.
+`FfiPlugin`은 Crossbeam 이벤트를 등록하고 sender를 `OnceLock`에 보관합니다. Android는 `RustBinding`의 static native 메서드와 `jni_fn` export를, iOS는 C 콜백 export를 통해 같은 `FfiEvents`로 변환합니다.
 
 ```text
 플랫폼 콜백
@@ -87,27 +87,27 @@ Desktop은 ProjectDirs에서 데이터 경로를 얻어 `kv` 하위 디렉터리
   → Bevy의 EventReader에서 처리
 ```
 
-외부 콜백 함수에서 Bevy World를 직접 수정하는 대신 메시지를 보내는 경계다. 이벤트에는 앱 초기화 완료와 광고 로드·표시 성공/실패·닫힘·준비 여부가 포함된다. Android의 `jboolean`은 0 여부를 확인해 bool로 바꾸고, 오류 문자열은 Rust String으로 변환해 이벤트에 담는다.
+외부 콜백 함수에서 Bevy World를 직접 수정하는 대신 메시지를 보내는 경계입니다. 이벤트에는 앱 초기화 완료와 광고 로드·표시 성공/실패·닫힘·준비 여부가 포함됩니다. Android의 `jboolean`은 0 여부를 확인해 bool로 바꾸고, 오류 문자열은 Rust String으로 변환해 이벤트에 담습니다.
 
 ## 현재 활성 기능과 남아 있는 광고 코드
 
-키값 저장, 시간·locale 조회, Android splash 해제에는 실제 연결 구현이 있다. Android splash 해제는 게임 상태 진입 후 Rust에서 메서드를 호출하고, Kotlin이 메인 dispatcher에서 500ms 기다린 뒤 유지 플래그를 끈다.
+키값 저장, 시간·locale 조회, Android splash 해제에는 실제 연결 구현이 있습니다. Android splash 해제는 게임 상태 진입 후 Rust에서 메서드를 호출하고, Kotlin이 메인 dispatcher에서 500ms 기다린 뒤 유지 플래그를 끕니다.
 
-반면 Android·iOS의 광고 및 앱 초기화 SDK 호출은 현재 주석 처리돼 있다. `FfiPlugin`에서도 초기화 이벤트 처리·초기화 완료 후 광고 실행 시스템의 등록이 비활성화돼 있다. Web·Desktop 광고 구현은 로그 중심의 대체 함수다.
+반면 Android·iOS의 광고 및 앱 초기화 SDK 호출은 현재 주석 처리돼 있습니다. `FfiPlugin`에서도 초기화 이벤트 처리·초기화 완료 후 광고 실행 시스템의 등록이 비활성화돼 있습니다. Web·Desktop 광고 구현은 로그 중심의 대체 함수입니다.
 
-광고 이벤트 처리기는 남아 있지만, 일반 실행 버튼은 광고 준비 상태를 조회하지 않고 바로 추첨을 시작한다.
+광고 이벤트 처리기는 남아 있지만, 일반 실행 버튼은 광고 준비 상태를 조회하지 않고 바로 추첨을 시작합니다.
 
 ## locale·시간 정보의 플랫폼 차이
 
-locale은 Android의 Locale, iOS의 Locale.current, Web의 navigator.language에서 읽고, Desktop은 `ko_KR`을 반환한다. UI는 `OnceLock`에 보관한 문자열을 이용해 `ko_KR`·`en_KR`이면 한국어, 나머지는 영어를 선택한다. 런타임 언어 변경이나 모든 locale 변형을 정규화하는 체계는 아니다.
+locale은 Android의 Locale, iOS의 Locale.current, Web의 navigator.language에서 읽고, Desktop은 `ko_KR`을 반환합니다. UI는 `OnceLock`에 보관한 문자열을 이용해 `ko_KR`·`en_KR`이면 한국어, 나머지는 영어를 선택합니다. 런타임 언어 변경이나 모든 locale 변형을 정규화하는 체계는 아닙니다.
 
-시간대 offset도 공통 함수명만으로 의미가 완전히 같지는 않다.
+시간대 offset도 공통 함수명만으로 의미가 완전히 같지는 않습니다.
 
-- Android는 `TimeZone.rawOffset`을 초로 바꾼다. 현재 시점의 일광절약시간 보정까지 포함하는 계산은 아니다.
-- iOS는 현재 `secondsFromGMT()`를 사용한다.
-- Web은 `getTimezoneOffset()`에 절댓값을 취해 부호를 잃는다. UTC 서쪽 시간대에서는 같은 의미의 offset을 전달하지 못한다.
-- Desktop은 +9시간으로 고정한다.
+- Android는 `TimeZone.rawOffset`을 초로 바꿉니다. 현재 시점의 일광절약시간 보정까지 포함하는 계산은 아닙니다.
+- iOS는 현재 `secondsFromGMT()`를 사용합니다.
+- Web은 `getTimezoneOffset()`에 절댓값을 취해 부호를 잃습니다. UTC 서쪽 시간대에서는 같은 의미의 offset을 전달하지 못합니다.
+- Desktop은 +9시간으로 고정합니다.
 
 ## 구현 결과 {/* #구현-결과와-본인-작업-근거 */}
 
-공통 게임·UI가 플랫폼 저장 API를 직접 알지 않도록 trait과 target별 구현을 두고, JNI·Swift C ABI·wasm-bindgen으로 같은 기능을 연결했다. 호출 방향과 콜백 방향을 분리하고 콜백 데이터를 Bevy 이벤트로 넘긴 경험이 핵심이다.
+공통 게임·UI가 플랫폼 저장 API를 직접 알지 않도록 trait과 target별 구현을 두고, JNI·Swift C ABI·wasm-bindgen으로 같은 기능을 연결했습니다. 호출 방향과 콜백 방향을 분리하고 콜백 데이터를 Bevy 이벤트로 넘긴 경험이 핵심입니다.

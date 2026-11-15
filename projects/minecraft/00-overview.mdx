@@ -16,7 +16,7 @@ tags:
 
 ## 개요 {/* #article-introduction */}
 
-C++20과 DirectX 11 기반 자체 엔진으로 Minecraft의 복셀 월드와 생존 플레이를 구현한 개인 프로젝트다. 지형을 화면에 표시하는 데서 끝내지 않고, 플레이어가 블록을 변경했을 때 조명·유체·충돌·게임플레이가 함께 반응하도록 연결했다.
+C++20과 DirectX 11 기반 자체 엔진으로 Minecraft의 복셀 월드와 생존 플레이를 구현한 개인 프로젝트입니다. 지형을 화면에 표시하는 데서 끝내지 않고, 플레이어가 블록을 변경했을 때 조명·유체·충돌·게임플레이가 함께 반응하도록 연결했습니다.
 
 | 항목 | 내용 |
 | --- | --- |
@@ -26,22 +26,22 @@ C++20과 DirectX 11 기반 자체 엔진으로 Minecraft의 복셀 월드와 생
 | 주요 기술 | C++20, DirectX 11, HLSL |
 | 구현 범위 | Framework, Voxel World, Rendering, Gameplay, UI/Tool |
 
-아래 기술 문서에서 월드 생성, 렌더링, 게임플레이의 세부 구현을 설명한다. 원작 에셋을 활용했으며, 게임 시스템은 C++로 구현했다.
+아래 기술 문서에서 월드 생성, 렌더링, 게임플레이의 세부 구현을 설명합니다. 원작 에셋을 활용했으며, 게임 시스템은 C++로 구현했습니다.
 
 ## 추천 문서 {/* #먼저-읽을-핵심-문서 */}
 
-처음에는 다음 네 문서로 계산 구조와 플레이까지 이어지는 흐름을 확인할 수 있다.
+처음에는 다음 네 문서로 계산 구조와 플레이까지 이어지는 흐름을 확인할 수 있습니다.
 
 1. [비동기 청크 스트리밍](/projects/minecraft/async-chunk-streaming): 많은 블록을 언제 계산하고, 언제 GPU에 반영하는가.
 2. [복셀 메시 생성과 렌더링](/projects/minecraft/voxel-meshing-rendering): 블록 배열에서 실제로 그릴 면과 정점을 어떻게 추리는가.
 3. [DDA 블록 선택과 편집](/projects/minecraft/dda-block-editing): 플레이어 입력을 월드 변경과 주변 청크 갱신에 어떻게 연결하는가.
 4. [하늘광·블록광 전파](/projects/minecraft/voxel-light-propagation): 설치·파괴로 달라진 공간에 빛을 어떻게 제거하고 다시 전파하는가.
 
-렌더링에 관심이 있다면 메시 문서 다음에 [Shadow Map과 렌더 패스](/projects/minecraft/shadow-map-render-passes)를, 게임플레이에 관심이 있다면 편집 문서 다음에 [인벤토리·제작·제련](/projects/minecraft/inventory-crafting-storage)을 읽는 순서가 좋다.
+렌더링에 관심이 있다면 메시 문서 다음에 [Shadow Map과 렌더 패스](/projects/minecraft/shadow-map-render-passes)를, 게임플레이에 관심이 있다면 편집 문서 다음에 [인벤토리·제작·제련](/projects/minecraft/inventory-crafting-storage)을 읽는 순서가 좋습니다.
 
 ## 시스템이 연결되는 방식
 
-핵심 데이터는 청크가 소유한 블록 배열이다. 블록마다 별도의 GameObject와 Draw 호출을 만드는 대신 청크 단위 메시로 화면을 구성하고, 플레이어·몬스터·투사체는 별도 객체 로직으로 월드와 상호작용한다.
+핵심 데이터는 청크가 소유한 블록 배열입니다. 블록마다 별도의 GameObject와 Draw 호출을 만드는 대신 청크 단위 메시로 화면을 구성하고, 플레이어·몬스터·투사체는 별도 객체 로직으로 월드와 상호작용합니다.
 
 ```text
 카메라 주변 청크 요청
@@ -54,7 +54,7 @@ C++20과 DirectX 11 기반 자체 엔진으로 Minecraft의 복셀 월드와 생
   → 갱신된 GPU 버퍼로 화면 반영
 ```
 
-이는 주요 책임을 요약한 흐름이며, 모든 조명·게임플레이 로직이 Worker에서 실행된다는 뜻은 아니다. 초기 청크 조명과 런타임 편집 조명은 실행 경로가 다르다. 조회는 편집 대기 값을 먼저 읽을 수 있지만 화면은 이전 버퍼를 사용할 수 있어 논리 변경과 렌더링 반영 시점도 구분된다.
+이는 주요 책임을 요약한 흐름이며, 모든 조명·게임플레이 로직이 Worker에서 실행된다는 뜻은 아닙니다. 초기 청크 조명과 런타임 편집 조명은 실행 경로가 다릅니다. 조회는 편집 대기 값을 먼저 읽을 수 있지만 화면은 이전 버퍼를 사용할 수 있어 논리 변경과 렌더링 반영 시점도 구분됩니다.
 
 ## 관련 문서 {/* #전체-기술-문서 */}
 
@@ -88,7 +88,7 @@ C++20과 DirectX 11 기반 자체 엔진으로 Minecraft의 복셀 월드와 생
 
 ## 비슷해 보이는 설명의 구분
 
-청크·편집·조명 문서에 같은 함수가 등장하는 것은 하나의 월드 변경 흐름을 서로 다른 관점에서 보기 때문이다. 공통 API의 상세는 담당 문서를 기준으로 읽으면 된다.
+청크·편집·조명 문서에 같은 함수가 등장하는 것은 하나의 월드 변경 흐름을 서로 다른 관점에서 보기 때문입니다. 공통 API의 상세는 담당 문서를 기준으로 읽으면 됩니다.
 
 | 연결 지점 | 상세 설명의 기준 |
 | --- | --- |
@@ -100,9 +100,9 @@ C++20과 DirectX 11 기반 자체 엔진으로 Minecraft의 복셀 월드와 생
 
 ## Hogwarts Legacy와 공유하는 프레임워크 기반
 
-Generation Handle과 Manager 소유권, Slot 재사용, FrameEnd 파괴는 Minecraft에도 구현되어 있다. Handle 조회 시 Index 범위·Slot 점유·Generation을 검증하고, Slot을 Reset할 때 Generation을 증가시키는 기본 원리는 두 프로젝트에서 같다.
+Generation Handle과 Manager 소유권, Slot 재사용, FrameEnd 파괴는 Minecraft에도 구현되어 있습니다. Handle 조회 시 Index 범위·Slot 점유·Generation을 검증하고, Slot을 Reset할 때 Generation을 증가시키는 기본 원리는 두 프로젝트에서 같습니다.
 
-같은 원리를 사용하는 [Hogwarts Legacy의 Generation Handle 기반 Object Manager](/projects/hogwarts-legacy/handle-object-manager)에 타입과 조회 흐름을 정리했다.
+같은 원리를 사용하는 [Hogwarts Legacy의 Generation Handle 기반 Object Manager](/projects/hogwarts-legacy/handle-object-manager)에 타입과 조회 흐름을 정리했습니다.
 
 | 항목 | Minecraft에서 확인한 구현 | Hogwarts Legacy에서 확인한 구현 |
 | --- | --- | --- |
@@ -111,14 +111,14 @@ Generation Handle과 Manager 소유권, Slot 재사용, FrameEnd 파괴는 Minec
 | 객체 등록 | Handle을 먼저 할당하고 Clone 완료 후 Slot·Layer에 저장 | Slot·Layer 등록 후 `OnRegisteredToManager()` 호출 |
 | 운영 API | `AllReset()`, `DelLayer()`와 기본 Update 단계 | Layer 선택·제외 Reset, Managed Update, 단계별 Update View |
 
-Minecraft에서 초기화 전에 Handle 값을 받는 것과 Manager를 통해 해당 객체를 조회할 수 있는 시점은 다르다. Clone 도중에는 Slot에 객체가 아직 저장되지 않는다. Hogwarts의 등록 완료 훅은 이 경계를 명시적으로 제공하는 차이다.
+Minecraft에서 초기화 전에 Handle 값을 받는 것과 Manager를 통해 해당 객체를 조회할 수 있는 시점은 다릅니다. Clone 도중에는 Slot에 객체가 아직 저장되지 않습니다. Hogwarts의 등록 완료 훅은 이 경계를 명시적으로 제공하는 차입니다.
 
-Minecraft의 `AllReset()`과 `DelLayer()`는 내부에서 `FrameEnd()`를 직접 호출해 정리한다.
+Minecraft의 `AllReset()`과 `DelLayer()`는 내부에서 `FrameEnd()`를 직접 호출해 정리합니다.
 
-이 비교는 각 저장소의 `Engine/Public/Handle.h`, `Slot.h`, `GameObjectManager.h` 및 `Engine/Private/GameObjectManager.cpp`를 기준으로 한다. 공통 기반은 여기서 짧게 설명하고, Minecraft 기술 문서는 복셀 월드처럼 프로젝트 고유의 문제에 집중한다.
+이 비교는 각 저장소의 `Engine/Public/Handle.h`, `Slot.h`, `GameObjectManager.h` 및 `Engine/Private/GameObjectManager.cpp`를 기준으로 합니다. 공통 기반은 여기서 짧게 설명하고, Minecraft 기술 문서는 복셀 월드처럼 프로젝트 고유의 문제에 집중합니다.
 
 ## 구현 범위 {/* #구현-범위를-읽을-때의-기준 */}
 
-- 월드는 `CVoxelManager3`·`CChunk3` 경로를 사용한다.
-- 메시 생성에는 노출 면 컬링을 사용한다.
-- 편집 기록은 메모리에 보관하고 청크 재생성 시 복원한다.
+- 월드는 `CVoxelManager3`·`CChunk3` 경로를 사용합니다.
+- 메시 생성에는 노출 면 컬링을 사용합니다.
+- 편집 기록은 메모리에 보관하고 청크 재생성 시 복원합니다.
