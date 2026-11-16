@@ -104,9 +104,11 @@ const config: Config = {
       items: [
         {to: '/', label: 'Home', position: 'left'},
         {to: '/projects', label: 'Projects', position: 'left'},
-        {to: '/archive', label: 'Archive', position: 'left'},
         ...(archiveDocsExist
-          ? [{to: '/archive/tags', label: 'Tags', position: 'left' as const}]
+          ? [
+              {to: '/archive', label: 'Archive', position: 'left' as const},
+              {to: '/archive/tags', label: 'Tags', position: 'left' as const},
+            ]
           : []),
         {to: '/about', label: 'About', position: 'left'},
         {

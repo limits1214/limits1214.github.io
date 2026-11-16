@@ -81,7 +81,7 @@ const timelineChronological: TimelineEntry[] = [
   projectEntry('minecraft'),
   projectEntry('hogwarts-legacy'),
   {
-    period: '2026.08',
+    period: '2026.11',
     title: '쥬신게임아카데미 수료',
     summary:
       '호그와트 레거시 팀 프로젝트를 끝으로 1년간의 C++ 게임 클라이언트 교육 과정을 마쳤습니다.',
